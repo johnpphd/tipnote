@@ -26,6 +26,7 @@ import {
   FONT_WEIGHT_BOLD,
 } from "@/theme/fontWeights";
 import { FONT_MONO } from "@/theme/createTipnoteTheme";
+import type { WorkspaceBrandId, PageBrandId } from "@/types";
 
 const lowlight = createLowlight(common);
 
@@ -117,8 +118,8 @@ function normalizeContent(content: JSONContent): JSONContent {
 interface BlockEditorProps {
   content: JSONContent | null;
   onUpdate: (content: JSONContent) => void;
-  workspaceId: string;
-  pageId: string;
+  workspaceId: WorkspaceBrandId;
+  pageId: PageBrandId;
   editable?: boolean;
 }
 

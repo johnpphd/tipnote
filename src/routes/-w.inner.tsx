@@ -6,6 +6,7 @@ import { CopilotSidebar } from "@copilotkit/react-ui";
 import "@copilotkit/react-ui/styles.css";
 import Sidebar from "@/components/sidebar/Sidebar";
 import SearchDialog from "@/components/search/SearchDialog";
+import { PageBrandId } from "@/types";
 import type { WorkspaceBrandId } from "@/types";
 
 /** Inner component so hooks like useCopilotAction run inside <CopilotKit>. */
@@ -36,7 +37,8 @@ export default function WorkspaceInner({
         required: true,
       },
     ],
-    handler: async ({ pageId }: { pageId: string }) => {
+    handler: async ({ pageId: rawPageId }: { pageId: string }) => {
+      const pageId = PageBrandId.parse(rawPageId);
       void navigate({ to: "/w/$pageId", params: { pageId } });
       return `Navigated to page ${pageId}`;
     },
