@@ -1,0 +1,216 @@
+rules_version='2'
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // MCP OAuth collections (server-only via firebase-admin, no client access)
+    match /mcpOAuthClients/{clientId} {
+      allow read, write: if false;
+    }
+    match /mcpAuthCodes/{codeHash} {
+      allow read, write: if false;
+    }
+    match /mcpTokens/{tokenHash} {
+      allow read, write: if false;
+    }
+
+    // Helper: check if user is a workspace member (via the page's workspaceId field)
+    function isWorkspaceMember(workspaceId) {
+      return request.auth != null &&
+        request.auth.uid in get(/databases/$(database)/documents/workspaces/$(workspaceId)).data.memberIds;
+    }
+
+    // Helper: check if page is published
+    function isPagePublished(pageId) {
+      return get(/databases/$(database)/documents/pages/$(pageId)).data.isPublished == true;
+    }
+
+    // Helper: check if page is shared with the current user
+    function isPageSharedWithUser(pageId) {
+      let page = get(/databases/$(database)/documents/pages/$(pageId));
+      return request.auth != null &&
+        'sharedWithIds' in page.data &&
+        request.auth.uid in page.data.sharedWithIds;
+    }
+
+    // Helper: check if current user is an editor on a shared page
+    function isPageEditor(pageId) {
+      let page = get(/databases/$(database)/documents/pages/$(pageId));
+      return request.auth != null &&
+        'sharedWith' in page.data &&
+        request.auth.uid in page.data.sharedWith &&
+        page.data.sharedWith[request.auth.uid].role == 'editor';
+    }
+
+    // Helper: check if write request modifies sharing fields or ownerId
+    function doesNotModifyProtectedFields() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sharedWith', 'sharedWithIds', 'ownerId']);
+    }
+
+    // Helper: check if user is an editor on the parent database's page (for row pages)
+    function isDbRowParentPageEditor(parentDatabaseId) {
+      return isPageEditor(
+        get(/databases/$(database)/documents/databases/$(parentDatabaseId)).data.pageId
+      );
+    }
+
+    // Helper: check if user is shared with the parent database's page (for row pages)
+    function isDbRowParentPageShared(parentDatabaseId) {
+      return isPageSharedWithUser(
+        get(/databases/$(database)/documents/databases/$(parentDatabaseId)).data.pageId
+      );
+    }
+
+    // User profiles (for email lookup)
+    match /userProfiles/{uid} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == uid;
+    }
+
+    // Top-level published pages lookup (public read, auth write)
+    match /publishedPages/{shareToken} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Workspaces
+    match /workspaces/{workspaceId} {
+      allow read: if isAuthenticated() && request.auth.uid in resource.data.memberIds;
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.ownerId;
+      allow update: if isAuthenticated() && request.auth.uid in resource.data.memberIds;
+      allow delete: if isAuthenticated() && request.auth.uid == resource.data.ownerId;
+    }
+
+    // Pages (flat top-level collection)
+    match /pages/{pageId} {
+      allow read: if isWorkspaceMember(resource.data.workspaceId)
+        || resource.data.isPublished == true
+        || (isAuthenticated() && 'sharedWithIds' in resource.data && request.auth.uid in resource.data.sharedWithIds)
+        // Row pages inherit access from parent database's shared page
+        || (resource.data.isDbRow == true && resource.data.parentDatabaseId != null
+            && isDbRowParentPageShared(resource.data.parentDatabaseId));
+      allow create: if isAuthenticated() && (
+        isWorkspaceMember(request.resource.data.workspaceId)
+        // Editors can create row pages within shared databases
+        || (request.resource.data.isDbRow == true && request.resource.data.parentDatabaseId != null
+            && isDbRowParentPageEditor(request.resource.data.parentDatabaseId))
+      );
+      allow update: if isWorkspaceMember(resource.data.workspaceId)
+        || (isAuthenticated() && 'sharedWith' in resource.data && request.auth.uid in resource.data.sharedWith && resource.data.sharedWith[request.auth.uid].role == 'editor' && doesNotModifyProtectedFields())
+        // Editors can update row pages within shared databases
+        || (resource.data.isDbRow == true && resource.data.parentDatabaseId != null
+            && isDbRowParentPageEditor(resource.data.parentDatabaseId) && doesNotModifyProtectedFields());
+      allow delete: if isWorkspaceMember(resource.data.workspaceId)
+        // Editors can delete row pages within shared databases
+        || (resource.data.isDbRow == true && resource.data.parentDatabaseId != null
+            && isDbRowParentPageEditor(resource.data.parentDatabaseId));
+    }
+
+    // Databases (flat top-level collection) — 1 get() to check page permissions
+    match /databases/{databaseId} {
+      allow read: if isWorkspaceMember(
+          get(/databases/$(database)/documents/pages/$(resource.data.pageId)).data.workspaceId
+        )
+        || isPagePublished(resource.data.pageId)
+        || isPageSharedWithUser(resource.data.pageId);
+      allow create: if isAuthenticated();
+      allow update: if isWorkspaceMember(
+          get(/databases/$(database)/documents/pages/$(resource.data.pageId)).data.workspaceId
+        )
+        || isPageEditor(resource.data.pageId);
+      allow delete: if isWorkspaceMember(
+          get(/databases/$(database)/documents/pages/$(resource.data.pageId)).data.workspaceId
+        );
+    }
+
+    // Database Rows (flat top-level collection) — 2 get() calls: row → database → page
+    match /dbRows/{rowId} {
+      allow read: if isWorkspaceMember(
+          get(/databases/$(database)/documents/pages/$(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          )).data.workspaceId
+        )
+        || isPagePublished(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          )
+        || isPageSharedWithUser(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          );
+      allow create: if isAuthenticated();
+      allow update: if isWorkspaceMember(
+          get(/databases/$(database)/documents/pages/$(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          )).data.workspaceId
+        )
+        || isPageEditor(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          );
+      allow delete: if isWorkspaceMember(
+          get(/databases/$(database)/documents/pages/$(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          )).data.workspaceId
+        )
+        || isPageEditor(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          );
+    }
+
+    // Database Views (flat top-level collection) — 2 get() calls: view → database → page
+    match /dbViews/{viewId} {
+      allow read: if isWorkspaceMember(
+          get(/databases/$(database)/documents/pages/$(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          )).data.workspaceId
+        )
+        || isPagePublished(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          )
+        || isPageSharedWithUser(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          );
+      allow create: if isAuthenticated();
+      allow update: if isWorkspaceMember(
+          get(/databases/$(database)/documents/pages/$(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          )).data.workspaceId
+        )
+        || isPageEditor(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          );
+      allow delete: if isWorkspaceMember(
+          get(/databases/$(database)/documents/pages/$(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          )).data.workspaceId
+        )
+        || isPageEditor(
+            get(/databases/$(database)/documents/databases/$(resource.data.databaseId)).data.pageId
+          );
+    }
+
+    // Legacy nested collections (keep during migration transition)
+    match /workspaces/{workspaceId} {
+      match /pages/{pageId} {
+        allow read: if isWorkspaceMember(workspaceId)
+          || resource.data.isPublished == true
+          || (isAuthenticated() && 'sharedWithIds' in resource.data && request.auth.uid in resource.data.sharedWithIds);
+        allow write: if isWorkspaceMember(workspaceId);
+      }
+      match /databases/{databaseId} {
+        allow read, write: if isWorkspaceMember(workspaceId);
+      }
+      match /dbRows/{rowId} {
+        allow read, write: if isWorkspaceMember(workspaceId);
+      }
+      match /dbViews/{viewId} {
+        allow read, write: if isWorkspaceMember(workspaceId);
+      }
+      match /blocks/{blockId} {
+        allow read, write: if isWorkspaceMember(workspaceId);
+      }
+    }
+  }
+}

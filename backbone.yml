@@ -1,0 +1,66 @@
+project: tipnote
+description: Notion-like document editor with databases, sharing, and AI chat
+
+stack:
+  runtime: React 19
+  ui: MUI 7 (Material UI) + Emotion
+  editor: TipTap 2
+  routing: TanStack Router (file-based)
+  data-fetching: TanStack React Query
+  state: Jotai
+  ai: CopilotKit
+  backend: Firebase (Auth, Firestore, Storage, Cloud Functions)
+  build: Vite 6
+  language: TypeScript 5
+  package-manager: yarn
+
+dev:
+  port: 5180
+  command: yarn dev
+
+path-alias:
+  "@/": src/
+
+directories:
+  src/:
+    atoms/: Jotai atoms (chat, workspace)
+    components/:
+      chat/: CopilotKit chat panel
+      database/: Database views (table, board, list, gallery, calendar)
+      editor/: TipTap block editor, slash menu, toolbar
+      page/: Page chrome (header, breadcrumbs, cover, icon)
+      search/: Search dialog
+      sidebar/: Navigation sidebar, page tree
+    hooks/: React hooks wrapping lib/ with React Query caching
+    lib/:
+      blocks/: TipTap extension configs
+      chat/: Chat utilities
+      database/: Firestore CRUD for databases
+      firebase/: Firebase SDK init (auth, config, firestore, storage)
+    routes/: TanStack Router file-based routes
+    styles/: Global CSS
+    theme/: MUI theme (notionTheme.ts, notionColors.ts, fontWeights.ts, palette.ts, createTipnoteTheme.ts)
+    types/: TypeScript domain types (page, block, database, workspace, userProfile, brand, parsers)
+  functions/:
+    src/: Firebase Cloud Functions entry + CopilotKit server (copilotkit.ts, copilotkit-actions.ts, system-prompt.ts)
+    src/mcp/: MCP server (OAuth, tools, resources)
+    src/tools/: Tool definitions and executor
+  scripts/: Migration and seed scripts
+
+key-files:
+  - src/main.tsx                    # App entry
+  - src/App.tsx                     # Root App component
+  - src/routes/__root.tsx           # Root layout
+  - src/theme/notionTheme.ts        # MUI theme (base)
+  - src/theme/createTipnoteTheme.ts # MUI theme (builder)
+  - src/theme/palette.ts            # Theme palette
+  - src/lib/firebase/config.ts      # Firebase config
+  - src/types/index.ts              # Domain type exports
+  - src/types/brand.ts              # Branded types (Zod 4 .brand())
+  - src/types/parsers.ts            # Zod parsers for branded types
+  - functions/src/index.ts          # Cloud Functions entry
+  - functions/src/copilotkit.ts     # CopilotKit runtime server
+  - firebase.json                   # Firebase project config
+  - firestore.rules                 # Firestore security rules
+  - vite.config.ts                  # Vite + proxy config
+  - eslint.config.js                # ESLint flat config

@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+functions/node_modules/
+
+# Build
+dist/
+functions/lib/
+
+# Firebase (project-specific)
+.firebaserc
+
+# Environment
+.env
+.env.local
+.env.production
+.env.keys
+.env.op
+functions/.env
+.secrets.local
+
+# Firebase cache
+.firebase/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Generated
+.tanstack/
+
+# Dolt database files (added by bd init)
+.dolt/
+*.db

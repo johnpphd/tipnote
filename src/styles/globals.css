@@ -1,0 +1,86 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── CopilotKit sidebar dark theme overrides ── */
+:root {
+  --copilot-kit-primary-color: #6b9e6b;
+  --copilot-kit-contrast-color: #fff;
+  --copilot-kit-background-color: #222722;
+  --copilot-kit-secondary-color: #1a1f1a;
+  --copilot-kit-secondary-contrast-color: rgba(245, 240, 230, 0.92);
+  --copilot-kit-separator-color: rgba(245, 240, 230, 0.08);
+  --copilot-kit-response-button-background-color: #2d332d;
+  --copilot-kit-response-button-color: rgba(245, 240, 230, 0.92);
+  --copilot-kit-muted-color: rgba(245, 240, 230, 0.55);
+}
+
+[data-theme="light"] {
+  --copilot-kit-primary-color: #4a7a4a;
+  --copilot-kit-contrast-color: #fff;
+  --copilot-kit-background-color: #fffcf7;
+  --copilot-kit-secondary-color: #faf6f0;
+  --copilot-kit-secondary-contrast-color: rgba(45, 35, 25, 0.9);
+  --copilot-kit-separator-color: rgba(45, 35, 25, 0.1);
+  --copilot-kit-response-button-background-color: #f0ebe3;
+  --copilot-kit-response-button-color: rgba(45, 35, 25, 0.9);
+  --copilot-kit-muted-color: rgba(45, 35, 25, 0.55);
+}
+
+/* Sidebar toggle button -- match theme */
+.copilotKitButton {
+  background-color: #d4a662 !important;
+  color: #1a1f1a !important;
+}
+
+[data-theme="light"] .copilotKitButton {
+  background-color: #4a7a4a !important;
+  color: #fff !important;
+}
+
+/* Hide the "Powered by CopilotKit" footer text */
+p.poweredBy,
+p.poweredBy ~ * {
+  display: none !important;
+}
+
+/* Sidebar content wrapper -- fill available space */
+.copilotKitSidebarContentWrapper {
+  flex: 1 1 0% !important;
+  width: 100% !important;
+  min-width: 0;
+}
+
+/* Input area styling */
+.copilotKitInput {
+  background-color: var(
+    --copilot-kit-response-button-background-color
+  ) !important;
+  border-color: var(--copilot-kit-separator-color) !important;
+}
+
+.copilotKitInput textarea,
+.copilotKitInput input {
+  color: var(--copilot-kit-secondary-contrast-color) !important;
+}
+
+.copilotKitInput textarea::placeholder,
+.copilotKitInput input::placeholder {
+  color: var(--copilot-kit-muted-color) !important;
+}
