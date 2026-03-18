@@ -19,6 +19,7 @@ import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import { useMatch } from "@tanstack/react-router";
 import { FONT_WEIGHT_SEMIBOLD } from "@/theme/fontWeights";
+import { WorkspaceBrandId, PageBrandId } from "@/types";
 
 const DRAWER_WIDTH = 380;
 
@@ -34,8 +35,8 @@ export default function ChatPanel() {
   const currentPageId = pageMatch?.params?.pageId;
 
   const { messages, sendMessage, clearMessages, isLoading } = useChat({
-    workspaceId: workspaceId || "",
-    currentPageId,
+    workspaceId: WorkspaceBrandId.parse(workspaceId || ""),
+    currentPageId: currentPageId ? PageBrandId.parse(currentPageId) : undefined,
   });
 
   // Auto-scroll to bottom when messages change

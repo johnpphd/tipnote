@@ -48,7 +48,7 @@ export default function ListView({
   onRowClick,
   isReadOnly,
 }: ListViewProps) {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<RowBrandId | null>(null);
 
   const titlePropId = database.propertyOrder.find(
     (id) => database.properties[id]?.type === "title",
@@ -59,7 +59,7 @@ export default function ListView({
     .map((id) => database.properties[id])
     .filter(Boolean);
 
-  const handleToggle = useCallback((rowId: string) => {
+  const handleToggle = useCallback((rowId: RowBrandId) => {
     setExpandedId((prev) => (prev === rowId ? null : rowId));
   }, []);
 

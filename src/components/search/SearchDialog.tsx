@@ -17,6 +17,7 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import { usePages } from "@/hooks/usePages";
 import { useWorkspace } from "@/hooks/useWorkspace";
+import type { PageBrandId } from "@/types";
 
 interface SearchDialogInnerProps {
   onClose: () => void;
@@ -39,7 +40,7 @@ function SearchDialogInner({ onClose }: SearchDialogInnerProps) {
   }, [pages, query]);
 
   const handleSelect = useCallback(
-    (pageId: string) => {
+    (pageId: PageBrandId) => {
       void navigate({ to: "/w/$pageId", params: { pageId } });
       onClose();
     },

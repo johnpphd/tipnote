@@ -4,6 +4,7 @@ import {
   useCopilotChatInternal,
   useCopilotAction,
 } from "@copilotkit/react-core";
+import { PageBrandId } from "@/types";
 import type { ChatMessage, ChatContext } from "@/lib/chat/types";
 
 /**
@@ -119,7 +120,8 @@ export function useChat(_context: ChatContext) {
         required: true,
       },
     ],
-    handler: async ({ pageId }: { pageId: string }) => {
+    handler: async ({ pageId: rawPageId }: { pageId: string }) => {
+      const pageId = PageBrandId.parse(rawPageId);
       void navigate({
         to: "/w/$pageId",
         params: { pageId },

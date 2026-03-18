@@ -1,5 +1,6 @@
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
+import type { WorkspaceBrandId } from "@/types";
 
 const MIGRATION_KEY = "notion-clone-migrations-v1";
 
@@ -18,7 +19,7 @@ function markMigrated(name: string) {
   localStorage.setItem(MIGRATION_KEY, JSON.stringify([...migrated]));
 }
 
-export async function runMigrations(workspaceId: string) {
+export async function runMigrations(workspaceId: WorkspaceBrandId) {
   const migrated = getMigrated();
 
   // Migration: Update "Table View" -> "Default view" and show ALL columns

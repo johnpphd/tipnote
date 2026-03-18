@@ -1,9 +1,10 @@
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "./config";
+import type { WorkspaceBrandId, PageBrandId } from "@/types";
 
 export async function uploadImage(
-  workspaceId: string,
-  pageId: string,
+  workspaceId: WorkspaceBrandId,
+  pageId: PageBrandId,
   file: File,
 ): Promise<string> {
   const timestamp = Date.now();

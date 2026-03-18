@@ -5,7 +5,7 @@ import { useDatabaseRowByPageId } from "@/hooks/useDatabaseRowByPageId";
 import { updateDatabaseRow } from "@/lib/database/databases";
 import CellDisplay from "@/components/database/properties/CellDisplay";
 import CellEditor from "@/components/database/properties/CellEditor";
-import type { PropertyValue } from "@/types";
+import type { PropertyValue, PropertyBrandId } from "@/types";
 import type { PageBrandId, DatabaseBrandId } from "@/types";
 
 interface RowPropertiesPanelProps {
@@ -21,14 +21,13 @@ export default function RowPropertiesPanel({
 }: RowPropertiesPanelProps) {
   const { data: database } = useDatabase(parentDatabaseId);
   const { data: row } = useDatabaseRowByPageId(pageId, parentDatabaseId);
-  const [editingPropertyId, setEditingPropertyId] = useState<string | null>(
-    null,
-  );
-  const [expandedProperties, setExpandedProperties] = useState<Set<string>>(
-    new Set(),
-  );
+  const [editingPropertyId, setEditingPropertyId] =
+    useState<PropertyBrandId | null>(null);
+  const [expandedProperties, setExpandedProperties] = useState<
+    Set<PropertyBrandId>
+  >(new Set());
 
-  const toggleExpanded = useCallback((propertyId: string) => {
+  const toggleExpanded = useCallback((propertyId: PropertyBrandId) => {
     setExpandedProperties((prev) => {
       const next = new Set(prev);
       if (next.has(propertyId)) {
@@ -41,7 +40,7 @@ export default function RowPropertiesPanel({
   }, []);
 
   const handlePropertyChange = useCallback(
-    (propertyId: string, value: PropertyValue) => {
+    (propertyId: PropertyBrandId, value: PropertyValue) => {
       if (!row) return;
       void updateDatabaseRow(row.id, { [propertyId]: value });
     },

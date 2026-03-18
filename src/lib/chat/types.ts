@@ -1,3 +1,5 @@
+import type { PageBrandId, WorkspaceBrandId } from "@/types";
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
@@ -15,11 +17,11 @@ export interface ToolResult {
 
 export interface ChatAction {
   type: "navigate";
-  pageId: string;
+  pageId: PageBrandId;
 }
 
 export interface ChatContext {
-  workspaceId: string;
-  currentPageId?: string;
+  workspaceId: WorkspaceBrandId;
+  currentPageId?: PageBrandId;
   currentPageTitle?: string;
 }
