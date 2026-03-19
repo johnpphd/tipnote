@@ -18,49 +18,18 @@ export default defineConfig(({ mode }) => {
     },
   },
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: {
-          firebase: [
-            "firebase/app",
-            "firebase/auth",
-            "firebase/firestore",
-            "firebase/storage",
-          ],
-          editor: [
-            "@tiptap/react",
-            "@tiptap/starter-kit",
-            "@tiptap/core",
-            "@tiptap/extension-code-block-lowlight",
-            "@tiptap/extension-image",
-            "@tiptap/extension-placeholder",
-            "@tiptap/extension-task-item",
-            "@tiptap/extension-task-list",
-            "@tiptap/extension-table",
-            "@tiptap/extension-table-cell",
-            "@tiptap/extension-table-header",
-            "@tiptap/extension-table-row",
-            "@tiptap/suggestion",
-            "lowlight",
-            "prosemirror-model",
-            "prosemirror-state",
-            "prosemirror-view",
-            "prosemirror-transform",
-            "prosemirror-commands",
-            "prosemirror-keymap",
-            "prosemirror-schema-list",
-            "prosemirror-history",
-            "prosemirror-dropcursor",
-            "prosemirror-gapcursor",
-            "prosemirror-tables",
-          ],
-          mui: ["@mui/material", "@mui/icons-material"],
-          react: ["react", "react-dom", "react/jsx-runtime", "scheduler"],
-          router: ["@tanstack/react-router"],
-          query: ["@tanstack/react-query"],
-          table: ["@tanstack/react-table", "@tanstack/react-virtual"],
-          copilotkit: ["@copilotkit/react-core", "@copilotkit/react-ui"],
-          dnd: ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
+        manualChunks(id: string) {
+          if (id.includes("firebase/")) return "firebase";
+          if (id.includes("@tiptap/") || id.includes("prosemirror-") || id.includes("lowlight")) return "editor";
+          if (id.includes("@mui/")) return "mui";
+          if (id.includes("node_modules/react-dom/") || id.includes("node_modules/react/") || id.includes("node_modules/scheduler/")) return "react";
+          if (id.includes("@tanstack/react-router")) return "router";
+          if (id.includes("@tanstack/react-query") || id.includes("@tanstack/query-core")) return "query";
+          if (id.includes("@tanstack/react-table") || id.includes("@tanstack/react-virtual")) return "table";
+          if (id.includes("@copilotkit/")) return "copilotkit";
+          if (id.includes("@dnd-kit/")) return "dnd";
         },
       },
     },

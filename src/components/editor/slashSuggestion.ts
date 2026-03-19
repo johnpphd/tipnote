@@ -1,5 +1,4 @@
 import { ReactRenderer } from "@tiptap/react";
-import tippy, { type Instance as TippyInstance } from "tippy.js";
 import type { SuggestionOptions } from "@tiptap/suggestion";
 import { SlashMenuList, type SlashMenuRef } from "./SlashMenu";
 import { filterSlashItems, type SlashMenuItem } from "./slashItems";
@@ -9,7 +8,7 @@ const slashSuggestion: Omit<SuggestionOptions<SlashMenuItem>, "editor"> = {
 
   render: () => {
     let component: ReactRenderer<SlashMenuRef> | null = null;
-    let popup: TippyInstance[] | null = null;
+    let wrapper: HTMLDivElement | null = null;
 
     return {
       onStart: (props) => {
@@ -20,37 +19,46 @@ const slashSuggestion: Omit<SuggestionOptions<SlashMenuItem>, "editor"> = {
 
         if (!props.clientRect) return;
 
-        popup = tippy("body", {
-          getReferenceClientRect: props.clientRect as () => DOMRect,
-          appendTo: () => document.body,
-          content: component.element,
-          showOnCreate: true,
-          interactive: true,
-          trigger: "manual",
-          placement: "bottom-start",
-        });
+        wrapper = document.createElement("div");
+        wrapper.style.position = "absolute";
+        wrapper.style.zIndex = "9999";
+
+        const rect = props.clientRect();
+        if (rect) {
+          wrapper.style.left = `${rect.left}px`;
+          wrapper.style.top = `${rect.bottom}px`;
+        }
+
+        if (component.element) {
+          wrapper.appendChild(component.element);
+        }
+        document.body.appendChild(wrapper);
       },
 
       onUpdate: (props) => {
         component?.updateProps(props);
 
-        if (!props.clientRect) return;
+        if (!props.clientRect || !wrapper) return;
 
-        popup?.[0]?.setProps({
-          getReferenceClientRect: props.clientRect as () => DOMRect,
-        });
+        const rect = props.clientRect();
+        if (rect) {
+          wrapper.style.left = `${rect.left}px`;
+          wrapper.style.top = `${rect.bottom}px`;
+        }
       },
 
       onKeyDown: (props) => {
         if (props.event.key === "Escape") {
-          popup?.[0]?.hide();
+          wrapper?.remove();
+          wrapper = null;
           return true;
         }
         return component?.ref?.onKeyDown(props) ?? false;
       },
 
       onExit: () => {
-        popup?.[0]?.destroy();
+        wrapper?.remove();
+        wrapper = null;
         component?.destroy();
       },
     };

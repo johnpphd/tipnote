@@ -9,7 +9,7 @@ import {
   CheckBox as TodoIcon,
   FormatQuote as QuoteIcon,
 } from "@mui/icons-material";
-import { BubbleMenu } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react/menus";
 import type { Editor } from "@tiptap/core";
 
 interface EditorToolbarProps {
@@ -43,7 +43,7 @@ function ToolbarButton({ icon, label, onClick, isActive }: ToolbarButtonProps) {
 
 export default function EditorToolbar({ editor }: EditorToolbarProps) {
   return (
-    <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
+    <BubbleMenu editor={editor}>
       <Paper
         elevation={4}
         sx={{
