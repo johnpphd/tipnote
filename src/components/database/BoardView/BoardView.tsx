@@ -399,8 +399,8 @@ export default function BoardView({
         return;
       }
 
-      // Card reorder / move — persist final positions
-      if (!finalPositions || hasSorts) return;
+      // Card move / reorder — persist final positions
+      if (!finalPositions) return;
 
       const rowId = RowBrandId.parse(active.id as string);
 
@@ -414,19 +414,20 @@ export default function BoardView({
       }
       if (!destColId) return;
 
-      // Persist cardOrder for affected columns
-      const newCardOrder = { ...(cardOrder ?? {}) };
-      for (const [colId, ids] of Object.entries(finalPositions)) {
-        // Only persist columns that changed
-        const currentIds = (groupedRows[colId] ?? []).map((r) => r.id);
-        const changed =
-          ids.length !== currentIds.length ||
-          ids.some((id, i) => currentIds[i] !== id);
-        if (changed) {
-          newCardOrder[colId] = ids as RowBrandId[];
+      // Persist cardOrder for affected columns (skip when explicit sorts are active)
+      if (!hasSorts) {
+        const newCardOrder = { ...(cardOrder ?? {}) };
+        for (const [colId, ids] of Object.entries(finalPositions)) {
+          const currentIds = (groupedRows[colId] ?? []).map((r) => r.id);
+          const changed =
+            ids.length !== currentIds.length ||
+            ids.some((id, i) => currentIds[i] !== id);
+          if (changed) {
+            newCardOrder[colId] = ids as RowBrandId[];
+          }
         }
+        onUpdateView?.({ cardOrder: newCardOrder });
       }
-      onUpdateView?.({ cardOrder: newCardOrder });
 
       // If card moved to a different column, update the row's property value
       if (groupByPropId) {
