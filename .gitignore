@@ -18,8 +18,10 @@ functions/lib/
 functions/.env
 .secrets.local
 
-# Firebase cache
+# Firebase cache and logs
 .firebase/
+firebase-debug.log
+ui-debug.log
 
 # IDE
 .vscode/
