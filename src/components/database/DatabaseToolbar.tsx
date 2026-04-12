@@ -747,12 +747,24 @@ export default function DatabaseToolbar({
         const propName = propDef?.name ?? "Unknown";
         const propType: PropertyType = propDef?.type ?? "text";
         const operatorLabel = getOperatorLabel(propType, filter.operator);
+        const resolveDisplayValue = (val: string): string => {
+          if (
+            (propType === "select" || propType === "multiSelect") &&
+            propDef?.options
+          ) {
+            const opt = propDef.options.find((o) => o.id === val);
+            if (opt) return opt.name;
+          }
+          return val;
+        };
         const valueStr =
           filter.value == null || filter.value === ""
             ? ""
             : Array.isArray(filter.value)
-              ? (filter.value as string[]).join(", ")
-              : String(filter.value);
+              ? (filter.value as string[])
+                  .map(resolveDisplayValue)
+                  .join(", ")
+              : resolveDisplayValue(String(filter.value));
         const chipLabel = valueStr
           ? `${propName} ${operatorLabel} ${valueStr}`
           : `${propName} ${operatorLabel}`;

@@ -177,7 +177,7 @@ function ValueInput({ propType, propDef, value, onChange }: ValueInputProps) {
           Select...
         </MenuItem>
         {propDef.options.map((opt) => (
-          <MenuItem key={opt.id} value={opt.name} sx={{ fontSize: "12px" }}>
+          <MenuItem key={opt.id} value={opt.id} sx={{ fontSize: "12px" }}>
             {opt.name}
           </MenuItem>
         ))}
@@ -192,6 +192,11 @@ function ValueInput({ propType, propDef, value, onChange }: ValueInputProps) {
         ? [value]
         : [];
 
+    const idToName: Record<string, string> = {};
+    for (const o of propDef.options ?? []) {
+      idToName[o.id] = o.name;
+    }
+
     return (
       <Select
         size="small"
@@ -201,15 +206,18 @@ function ValueInput({ propType, propDef, value, onChange }: ValueInputProps) {
           const val = e.target.value;
           onChange(typeof val === "string" ? val.split(",") : val);
         }}
-        renderValue={(sel) => (sel as string[]).join(", ") || "Select..."}
+        renderValue={(sel) =>
+          (sel as string[]).map((id) => idToName[id] ?? id).join(", ") ||
+          "Select..."
+        }
         displayEmpty
         sx={{ ...compactSx, minWidth: 100, flex: 1 }}
       >
         {propDef.options.map((opt) => (
-          <MenuItem key={opt.id} value={opt.name} sx={{ fontSize: "12px" }}>
+          <MenuItem key={opt.id} value={opt.id} sx={{ fontSize: "12px" }}>
             <Checkbox
               size="small"
-              checked={selected.includes(opt.name)}
+              checked={selected.includes(opt.id)}
               sx={{ p: 0, mr: 0.5 }}
             />
             <ListItemText
