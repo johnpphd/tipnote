@@ -62,6 +62,9 @@ interface DatabaseViewProps {
   isReadOnly?: boolean;
   /** Override row click navigation. Return false to disable default navigation. */
   onRowClick?: ((row: DatabaseRow) => void) | null;
+  calMode?: string;
+  calDate?: string;
+  onCalStateChange?: (mode: string, date: string) => void;
 }
 
 export default function DatabaseView({
@@ -70,6 +73,9 @@ export default function DatabaseView({
   onViewChange,
   isReadOnly,
   onRowClick: onRowClickProp,
+  calMode,
+  calDate,
+  onCalStateChange,
 }: DatabaseViewProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -392,6 +398,9 @@ export default function DatabaseView({
             onUpdateRow={handleUpdateRow}
             onAddRow={handleAddRow}
             onRowClick={isReadOnly || !handleRowClick ? noop : handleRowClick}
+            initialMode={calMode}
+            initialDate={calDate}
+            onStateChange={onCalStateChange}
           />
         )}
 

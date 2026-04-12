@@ -16,11 +16,15 @@ import { PageBrandId, UserBrandId, ViewBrandId, Title } from "@/types";
 
 interface PageSearch {
   v?: string;
+  calMode?: string;
+  calDate?: string;
 }
 
 export const Route = createFileRoute("/w/$pageId")({
   validateSearch: (search: Record<string, unknown>): PageSearch => ({
     v: typeof search.v === "string" ? search.v : undefined,
+    calMode: typeof search.calMode === "string" ? search.calMode : undefined,
+    calDate: typeof search.calDate === "string" ? search.calDate : undefined,
   }),
   component: PageView,
 });
@@ -28,7 +32,7 @@ export const Route = createFileRoute("/w/$pageId")({
 function PageView() {
   const { pageId: rawPageId } = Route.useParams();
   const brandedPageId = PageBrandId.parse(rawPageId);
-  const { v: activeViewId } = Route.useSearch();
+  const { v: activeViewId, calMode, calDate } = Route.useSearch();
   const { workspaceId } = useWorkspace();
   const { user } = useAuth();
   const { data: page, isLoading } = usePage(brandedPageId);
@@ -94,6 +98,16 @@ function PageView() {
               activeViewId ? ViewBrandId.parse(activeViewId) : undefined
             }
             onViewChange={handleViewChange}
+            calMode={calMode}
+            calDate={calDate}
+            onCalStateChange={(newMode, newDate) => {
+              void navigate({
+                to: "/w/$pageId",
+                params: { pageId: rawPageId },
+                search: { v: activeViewId, calMode: newMode, calDate: newDate },
+                replace: true,
+              });
+            }}
           />
         </Box>
       </Box>
