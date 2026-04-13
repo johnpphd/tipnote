@@ -65,7 +65,7 @@ import {
   SortByAlpha as SortByAlphaIcon,
   Palette as PaletteIcon,
 } from "@mui/icons-material";
-import { NOTION_COLORS } from "@/theme/notionColors";
+import { resolveColor } from "@/theme/notionColors";
 import { FONT_WEIGHT_MEDIUM, FONT_WEIGHT_SEMIBOLD } from "@/theme/fontWeights";
 import type {
   Database,
@@ -128,10 +128,6 @@ const VIEW_TYPE_ICONS: Record<ViewType, React.ReactElement> = {
   calendar: <CalendarIcon sx={{ fontSize: 16 }} />,
   gallery: <GalleryIcon sx={{ fontSize: 16 }} />,
 };
-
-function resolveColor(color: string): string {
-  return NOTION_COLORS[color] ?? color;
-}
 
 const RANDOM_COLORS = [
   "blue",

@@ -14,3 +14,8 @@ export const NOTION_COLORS: Record<string, string> = {
   pink: "#ae3b82",
   red: "#c44747",
 };
+
+/** Resolve a Notion color name to its hex value, passing through raw hex/CSS colors. */
+export function resolveColor(color: string): string {
+  return NOTION_COLORS[color] ?? color;
+}

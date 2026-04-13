@@ -3,12 +3,8 @@ import { Chip, Box, Checkbox, Link, Typography } from "@mui/material";
 import { Description as PageIcon } from "@mui/icons-material";
 import type { PropertyDefinition, PropertyValue } from "@/types";
 import type { Timestamp } from "firebase/firestore";
-import { NOTION_COLORS } from "@/theme/notionColors";
+import { resolveColor } from "@/theme/notionColors";
 import { FONT_WEIGHT_MEDIUM } from "@/theme/fontWeights";
-
-function resolveColor(color: string): string {
-  return NOTION_COLORS[color] ?? color;
-}
 
 interface CellDisplayProps {
   property: PropertyDefinition;

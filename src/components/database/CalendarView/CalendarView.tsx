@@ -40,7 +40,7 @@ import {
   FONT_WEIGHT_SEMIBOLD,
   FONT_WEIGHT_BOLD,
 } from "@/theme/fontWeights";
-import { NOTION_COLORS } from "@/theme/notionColors";
+import { buildOptionColorMap, getRowColorHex } from "../colorUtils";
 
 type CalendarMode = "month" | "week" | "4day";
 
@@ -72,10 +72,6 @@ function getDateFromValue(value: PropertyValue): Date | null {
     return d;
   }
   return null;
-}
-
-function resolveColor(color: string): string {
-  return NOTION_COLORS[color] ?? color;
 }
 
 function contrastText(bgColor: string): string {
@@ -168,35 +164,15 @@ export default function CalendarView({
   }, [database, datePropId, _view.config.colorBy]);
 
   // Build a lookup from option ID to resolved color
-  const optionColorMap = useMemo(() => {
-    const map = new Map<string, string>();
-    if (!colorPropId) return map;
-    const prop = database.properties[colorPropId];
-    if (prop?.options) {
-      for (const opt of prop.options) {
-        map.set(opt.id, resolveColor(opt.color));
-      }
-    }
-    return map;
-  }, [database, colorPropId]);
+  const optionColorMap = useMemo(
+    () => buildOptionColorMap(database, colorPropId),
+    [database, colorPropId],
+  );
 
   // Get the resolved color for a row based on its select/multiSelect property value
   const getRowColor = useCallback(
-    (row: DatabaseRow): string => {
-      if (!colorPropId) return "";
-      const value = row.properties[colorPropId];
-      if (typeof value === "string" && optionColorMap.has(value)) {
-        return optionColorMap.get(value)!;
-      }
-      // For multiSelect, use the first selected option's color
-      if (Array.isArray(value) && value.length > 0) {
-        const firstId = value[0] as string;
-        if (optionColorMap.has(firstId)) {
-          return optionColorMap.get(firstId)!;
-        }
-      }
-      return "";
-    },
+    (row: DatabaseRow): string =>
+      getRowColorHex(row, colorPropId, optionColorMap) ?? "",
     [colorPropId, optionColorMap],
   );
 
@@ -421,7 +397,7 @@ export default function CalendarView({
                     ...(isToday && { color: "primary.contrastText" }),
                   }}
                 >
-                  {mode === "month" ? format(day, "d") : format(day, "d")}
+                  {format(day, "d")}
                 </Typography>
                 {dayRows.slice(0, maxEventsPerCell).map((row) => {
                   const chipColor = getRowColor(row);

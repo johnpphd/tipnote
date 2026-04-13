@@ -34,7 +34,7 @@ import {
   type PropertyBrandId,
   type PageBrandId,
 } from "@/types";
-import { NOTION_COLORS } from "@/theme/notionColors";
+import { resolveColor } from "@/theme/notionColors";
 import BoardColumn, { type ColumnMenuAction } from "./BoardColumn";
 import { FONT_WEIGHT_SEMIBOLD } from "@/theme/fontWeights";
 
@@ -48,10 +48,6 @@ const RANDOM_COLORS = [
   "yellow",
   "brown",
 ];
-
-function resolveColor(color: string): string {
-  return NOTION_COLORS[color] ?? color;
-}
 
 interface BoardViewProps {
   database: Database;

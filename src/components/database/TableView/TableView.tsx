@@ -51,11 +51,7 @@ import type { RowBrandId, PropertyBrandId, PageBrandId } from "@/types";
 import CellEditor from "../properties/CellEditor";
 import CellDisplay from "../properties/CellDisplay";
 import { FONT_WEIGHT_REGULAR, FONT_WEIGHT_MEDIUM } from "@/theme/fontWeights";
-import { NOTION_COLORS } from "@/theme/notionColors";
-
-function resolveColor(color: string): string {
-  return NOTION_COLORS[color] ?? color;
-}
+import { buildOptionColorMap, getRowColorHex } from "../colorUtils";
 
 /** Convert a hex color to an rgba string at the given opacity */
 function hexToRgba(hex: string, alpha: number): string {
@@ -164,33 +160,15 @@ export default function TableView({
 
   // Build color map for row-level background coloring
   const colorByPropId = view.config.colorBy;
-  const optionColorMap = useMemo(() => {
-    const map = new Map<string, string>();
-    if (!colorByPropId) return map;
-    const prop = database.properties[colorByPropId];
-    if (prop?.options) {
-      for (const opt of prop.options) {
-        map.set(opt.id, resolveColor(opt.color));
-      }
-    }
-    return map;
-  }, [database, colorByPropId]);
+  const optionColorMap = useMemo(
+    () => buildOptionColorMap(database, colorByPropId),
+    [database, colorByPropId],
+  );
 
   /** Returns [bgColor, hoverBgColor] or [undefined, undefined] */
   const getRowColors = useCallback(
     (row: DatabaseRow): [string | undefined, string | undefined] => {
-      if (!colorByPropId || optionColorMap.size === 0)
-        return [undefined, undefined];
-      const value = row.properties[colorByPropId];
-      let hex: string | undefined;
-      if (typeof value === "string" && optionColorMap.has(value)) {
-        hex = optionColorMap.get(value)!;
-      } else if (Array.isArray(value) && value.length > 0) {
-        const firstId = value[0] as string;
-        if (optionColorMap.has(firstId)) {
-          hex = optionColorMap.get(firstId)!;
-        }
-      }
+      const hex = getRowColorHex(row, colorByPropId, optionColorMap);
       if (!hex) return [undefined, undefined];
       return [hexToRgba(hex, 0.1), hexToRgba(hex, 0.18)];
     },
