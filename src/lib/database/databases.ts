@@ -258,6 +258,7 @@ export async function updateDatabaseView(
     hideEmptyGroups?: boolean;
     groupSortOrder?: "manual" | "alphabetical";
     cardOrder?: Record<string, RowBrandId[]>;
+    colorBy?: PropertyBrandId | null;
   },
 ): Promise<void> {
   const configUpdates: Record<string, unknown> = {};
@@ -287,6 +288,9 @@ export async function updateDatabaseView(
   }
   if (updates.cardOrder !== undefined) {
     configUpdates["config.cardOrder"] = updates.cardOrder;
+  }
+  if (updates.colorBy !== undefined) {
+    configUpdates["config.colorBy"] = updates.colorBy;
   }
 
   const docUpdates: Record<string, unknown> = { ...configUpdates };

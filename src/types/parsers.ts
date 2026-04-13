@@ -210,6 +210,9 @@ export function parseDatabaseView(
             ),
           }
         : {}),
+      ...(config.colorBy != null
+        ? { colorBy: PropertyBrandId.parse(config.colorBy) }
+        : {}),
     },
   };
 }

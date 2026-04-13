@@ -63,6 +63,7 @@ import {
   Delete as DeleteIcon,
   VisibilityOff as VisibilityOffIcon,
   SortByAlpha as SortByAlphaIcon,
+  Palette as PaletteIcon,
 } from "@mui/icons-material";
 import { NOTION_COLORS } from "@/theme/notionColors";
 import { FONT_WEIGHT_MEDIUM, FONT_WEIGHT_SEMIBOLD } from "@/theme/fontWeights";
@@ -501,7 +502,7 @@ export default function DatabaseToolbar({
     null,
   );
   const [settingsSection, setSettingsSection] = useState<
-    "main" | "layout" | "properties" | "group"
+    "main" | "layout" | "properties" | "group" | "color"
   >("main");
   const [showSearch, setShowSearch] = useState(false);
   const [editingViewName, setEditingViewName] = useState(false);
@@ -628,6 +629,10 @@ export default function DatabaseToolbar({
 
   const handleChangeGroupBy = async (propId: PropertyBrandId) => {
     await updateDatabaseView(activeViewId, { groupBy: propId });
+  };
+
+  const handleChangeColorBy = async (propId: PropertyBrandId | null) => {
+    await updateDatabaseView(activeViewId, { colorBy: propId });
   };
 
   const handleAddView = async (type: ViewType) => {
@@ -761,9 +766,7 @@ export default function DatabaseToolbar({
           filter.value == null || filter.value === ""
             ? ""
             : Array.isArray(filter.value)
-              ? (filter.value as string[])
-                  .map(resolveDisplayValue)
-                  .join(", ")
+              ? (filter.value as string[]).map(resolveDisplayValue).join(", ")
               : resolveDisplayValue(String(filter.value));
         const chipLabel = valueStr
           ? `${propName} ${operatorLabel} ${valueStr}`
@@ -1191,6 +1194,40 @@ export default function DatabaseToolbar({
                     sx={{ fontSize: 16, color: "text.secondary" }}
                   />
                 </ListItemButton>
+
+                {/* Color (only for table and calendar views) */}
+                {(activeView?.type === "table" ||
+                  activeView?.type === "calendar") && (
+                  <ListItemButton
+                    onClick={() => setSettingsSection("color")}
+                    sx={{ px: 1.5, py: 0.5, borderRadius: 0 }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 28 }}>
+                      <PaletteIcon
+                        sx={{ fontSize: 16, color: "text.secondary" }}
+                      />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Color"
+                      primaryTypographyProps={{ sx: { fontSize: "13px" } }}
+                    />
+                    <Typography
+                      sx={{
+                        fontSize: "13px",
+                        color: "text.secondary",
+                        mr: 0.5,
+                      }}
+                    >
+                      {activeView?.config.colorBy
+                        ? (database.properties[activeView.config.colorBy]
+                            ?.name ?? "None")
+                        : "None"}
+                    </Typography>
+                    <ChevronRightIcon
+                      sx={{ fontSize: 16, color: "text.secondary" }}
+                    />
+                  </ListItemButton>
+                )}
               </List>
 
               {/* Delete view */}
@@ -1639,6 +1676,123 @@ export default function DatabaseToolbar({
                   </Typography>
                 </Box>
               )}
+            </>
+          )}
+
+          {settingsSection === "color" && (
+            <>
+              <SubPanelHeader
+                title="Color"
+                onBack={() => setSettingsSection("main")}
+              />
+
+              <Box sx={{ px: 1.5, py: 0.75 }}>
+                <Typography
+                  sx={{
+                    fontSize: "11px",
+                    fontWeight: FONT_WEIGHT_SEMIBOLD,
+                    color: "text.secondary",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                    mb: 0.5,
+                  }}
+                >
+                  Color by
+                </Typography>
+                <Select
+                  value={activeView?.config.colorBy ?? ""}
+                  onChange={(e) => {
+                    const val = e.target.value as string;
+                    void handleChangeColorBy(
+                      val === "" ? null : PropertyBrandId.parse(val),
+                    );
+                  }}
+                  size="small"
+                  fullWidth
+                  displayEmpty
+                  sx={{
+                    fontSize: "13px",
+                    height: 28,
+                    "& .MuiSelect-select": { py: 0.25, px: 1 },
+                  }}
+                >
+                  <MenuItem value="" sx={{ fontSize: "13px" }}>
+                    None
+                  </MenuItem>
+                  {database.propertyOrder
+                    .filter((id) => {
+                      const prop = database.properties[id];
+                      return (
+                        prop?.type === "select" || prop?.type === "multiSelect"
+                      );
+                    })
+                    .map((id) => {
+                      const prop = database.properties[id]!;
+                      return (
+                        <MenuItem key={id} value={id} sx={{ fontSize: "13px" }}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
+                          >
+                            {PROPERTY_TYPE_ICONS[prop.type]}
+                            {prop.name}
+                          </Box>
+                        </MenuItem>
+                      );
+                    })}
+                </Select>
+              </Box>
+
+              {/* Color preview */}
+              {activeView?.config.colorBy &&
+                (() => {
+                  const colorProp =
+                    database.properties[activeView.config.colorBy!];
+                  if (!colorProp?.options?.length) return null;
+                  return (
+                    <Box sx={{ px: 1.5, pt: 0.5, pb: 1 }}>
+                      <Typography
+                        sx={{
+                          fontSize: "11px",
+                          fontWeight: FONT_WEIGHT_SEMIBOLD,
+                          color: "text.secondary",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.5px",
+                          mb: 0.5,
+                        }}
+                      >
+                        Colors
+                      </Typography>
+                      {colorProp.options.map((opt) => (
+                        <Box
+                          key={opt.id}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            py: 0.25,
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              width: 12,
+                              height: 12,
+                              borderRadius: "3px",
+                              bgcolor: resolveColor(opt.color),
+                              flexShrink: 0,
+                            }}
+                          />
+                          <Typography sx={{ fontSize: "12px" }}>
+                            {opt.name}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  );
+                })()}
             </>
           )}
         </Box>

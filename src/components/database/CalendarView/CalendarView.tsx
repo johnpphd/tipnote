@@ -93,8 +93,7 @@ function getHeaderLabel(anchor: Date, mode: CalendarMode): string {
   if (mode === "week") {
     const weekStart = startOfWeek(anchor);
     const weekEnd = endOfWeek(anchor);
-    const sameMonth =
-      format(weekStart, "MMM") === format(weekEnd, "MMM");
+    const sameMonth = format(weekStart, "MMM") === format(weekEnd, "MMM");
     if (sameMonth) {
       return `${format(weekStart, "MMM d")} \u2013 ${format(weekEnd, "d, yyyy")}`;
     }
@@ -132,7 +131,9 @@ export default function CalendarView({
   onStateChange,
 }: CalendarViewProps) {
   const [anchor, setAnchor] = useState(() => parseCalDate(initialDate));
-  const [mode, setMode] = useState<CalendarMode>(() => parseCalMode(initialMode));
+  const [mode, setMode] = useState<CalendarMode>(() =>
+    parseCalMode(initialMode),
+  );
 
   // Sync calendar state to URL search params
   useEffect(() => {
@@ -150,14 +151,21 @@ export default function CalendarView({
     (id) => database.properties[id]?.type === "title",
   );
 
-  // Find the first select property to use for color-coding
+  // Use colorBy from view config, falling back to first select property
   const colorPropId = useMemo(() => {
+    if (_view.config.colorBy) {
+      const prop = database.properties[_view.config.colorBy];
+      if (prop && (prop.type === "select" || prop.type === "multiSelect")) {
+        return _view.config.colorBy;
+      }
+    }
+    // Fallback: auto-detect first select property
     return database.propertyOrder.find(
       (id) =>
         database.properties[id]?.type === "select" &&
         database.properties[id]?.id !== datePropId,
     );
-  }, [database, datePropId]);
+  }, [database, datePropId, _view.config.colorBy]);
 
   // Build a lookup from option ID to resolved color
   const optionColorMap = useMemo(() => {
@@ -172,13 +180,20 @@ export default function CalendarView({
     return map;
   }, [database, colorPropId]);
 
-  // Get the resolved color for a row based on its select property value
+  // Get the resolved color for a row based on its select/multiSelect property value
   const getRowColor = useCallback(
     (row: DatabaseRow): string => {
       if (!colorPropId) return "";
       const value = row.properties[colorPropId];
       if (typeof value === "string" && optionColorMap.has(value)) {
         return optionColorMap.get(value)!;
+      }
+      // For multiSelect, use the first selected option's color
+      if (Array.isArray(value) && value.length > 0) {
+        const firstId = value[0] as string;
+        if (optionColorMap.has(firstId)) {
+          return optionColorMap.get(firstId)!;
+        }
       }
       return "";
     },
@@ -292,7 +307,14 @@ export default function CalendarView({
           exclusive
           onChange={handleModeChange}
           size="small"
-          sx={{ "& .MuiToggleButton-root": { textTransform: "none", px: 1.5, py: 0.25, fontSize: "12px" } }}
+          sx={{
+            "& .MuiToggleButton-root": {
+              textTransform: "none",
+              px: 1.5,
+              py: 0.25,
+              fontSize: "12px",
+            },
+          }}
         >
           <ToggleButton value="month">Month</ToggleButton>
           <ToggleButton value="week">Week</ToggleButton>
@@ -399,16 +421,12 @@ export default function CalendarView({
                     ...(isToday && { color: "primary.contrastText" }),
                   }}
                 >
-                  {mode === "month"
-                    ? format(day, "d")
-                    : format(day, "d")}
+                  {mode === "month" ? format(day, "d") : format(day, "d")}
                 </Typography>
                 {dayRows.slice(0, maxEventsPerCell).map((row) => {
                   const chipColor = getRowColor(row);
                   const bg = chipColor || undefined;
-                  const fg = chipColor
-                    ? contrastText(chipColor)
-                    : undefined;
+                  const fg = chipColor ? contrastText(chipColor) : undefined;
                   const isExpanded = mode !== "month";
 
                   // Gather detail fields for expanded view
@@ -428,9 +446,7 @@ export default function CalendarView({
                       let display = String(val);
                       // Resolve select option IDs to names
                       if (prop.type === "select" && prop.options) {
-                        const opt = prop.options.find(
-                          (o) => o.id === val,
-                        );
+                        const opt = prop.options.find((o) => o.id === val);
                         if (opt) display = opt.name;
                       }
                       if (display.length > 0) {
@@ -460,7 +476,12 @@ export default function CalendarView({
                         variant="caption"
                         noWrap={mode === "month"}
                         sx={{
-                          fontSize: mode === "4day" ? "13px" : isExpanded ? "12px" : "10px",
+                          fontSize:
+                            mode === "4day"
+                              ? "13px"
+                              : isExpanded
+                                ? "12px"
+                                : "10px",
                           fontWeight: isExpanded
                             ? FONT_WEIGHT_SEMIBOLD
                             : FONT_WEIGHT_REGULAR,

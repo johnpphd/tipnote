@@ -51,6 +51,21 @@ import type { RowBrandId, PropertyBrandId, PageBrandId } from "@/types";
 import CellEditor from "../properties/CellEditor";
 import CellDisplay from "../properties/CellDisplay";
 import { FONT_WEIGHT_REGULAR, FONT_WEIGHT_MEDIUM } from "@/theme/fontWeights";
+import { NOTION_COLORS } from "@/theme/notionColors";
+
+function resolveColor(color: string): string {
+  return NOTION_COLORS[color] ?? color;
+}
+
+/** Convert a hex color to an rgba string at the given opacity */
+function hexToRgba(hex: string, alpha: number): string {
+  const clean = hex.replace("#", "");
+  if (clean.length !== 6) return hex;
+  const r = parseInt(clean.slice(0, 2), 16);
+  const g = parseInt(clean.slice(2, 4), 16);
+  const b = parseInt(clean.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
 const borderSubtleSx = { borderBottom: 1, borderColor: "divider" } as const;
 
@@ -146,6 +161,41 @@ export default function TableView({
   const handleClearSelection = useCallback(() => {
     setSelectedRowIds(new Set());
   }, []);
+
+  // Build color map for row-level background coloring
+  const colorByPropId = view.config.colorBy;
+  const optionColorMap = useMemo(() => {
+    const map = new Map<string, string>();
+    if (!colorByPropId) return map;
+    const prop = database.properties[colorByPropId];
+    if (prop?.options) {
+      for (const opt of prop.options) {
+        map.set(opt.id, resolveColor(opt.color));
+      }
+    }
+    return map;
+  }, [database, colorByPropId]);
+
+  /** Returns [bgColor, hoverBgColor] or [undefined, undefined] */
+  const getRowColors = useCallback(
+    (row: DatabaseRow): [string | undefined, string | undefined] => {
+      if (!colorByPropId || optionColorMap.size === 0)
+        return [undefined, undefined];
+      const value = row.properties[colorByPropId];
+      let hex: string | undefined;
+      if (typeof value === "string" && optionColorMap.has(value)) {
+        hex = optionColorMap.get(value)!;
+      } else if (Array.isArray(value) && value.length > 0) {
+        const firstId = value[0] as string;
+        if (optionColorMap.has(firstId)) {
+          hex = optionColorMap.get(firstId)!;
+        }
+      }
+      if (!hex) return [undefined, undefined];
+      return [hexToRgba(hex, 0.1), hexToRgba(hex, 0.18)];
+    },
+    [colorByPropId, optionColorMap],
+  );
 
   const handleNumberFormatChange = useCallback(
     (property: PropertyDefinition, format: NumberFormat) => {
@@ -426,13 +476,15 @@ export default function TableView({
           )}
           {virtualItems.map((virtualRow) => {
             const row = tableRows[virtualRow.index];
+            const [rowBg, rowBgHover] = getRowColors(row.original);
             return (
               <TableRow
                 key={row.id}
                 data-index={virtualRow.index}
                 ref={(node) => rowVirtualizer.measureElement(node)}
                 sx={{
-                  "&:hover": { bgcolor: "action.hover" },
+                  ...(rowBg ? { bgcolor: rowBg } : {}),
+                  "&:hover": { bgcolor: rowBgHover ?? "action.hover" },
                 }}
               >
                 <TableCell
