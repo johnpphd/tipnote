@@ -78,6 +78,7 @@ export interface DatabaseView {
     hideEmptyGroups?: boolean;
     groupSortOrder?: "manual" | "alphabetical";
     cardOrder?: Record<string, RowBrandId[]>;
+    colorBy?: PropertyBrandId;
   };
 }
 
