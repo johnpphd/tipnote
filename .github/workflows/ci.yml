@@ -24,6 +24,19 @@ jobs:
           node-version: 24
           cache: pnpm
 
+      - name: Write placeholder .env for vite build
+        # vite.config.ts calls loadEnv() which reads .env files, not process.env.
+        # Real values are supplied by the deployment environment, not CI.
+        run: |
+          printf '%s\n' \
+            'VITE_FIREBASE_PROJECT_ID=ci-placeholder' \
+            'VITE_FIREBASE_API_KEY=ci-placeholder' \
+            'VITE_FIREBASE_AUTH_DOMAIN=ci-placeholder.firebaseapp.com' \
+            'VITE_FIREBASE_STORAGE_BUCKET=ci-placeholder.firebasestorage.app' \
+            'VITE_FIREBASE_MESSAGING_SENDER_ID=0' \
+            'VITE_FIREBASE_APP_ID=ci-placeholder' \
+            > .env
+
       - name: Install root dependencies
         run: pnpm install --frozen-lockfile
 
