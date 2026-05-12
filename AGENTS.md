@@ -8,22 +8,20 @@ Tipnote is a Notion-like document editor. Features include rich text editing wit
 
 ## Verification Commands
 
-Run after every code change:
+Run after every code change (typecheck, lint, prettier, build -- mirrors CI):
 
 ```sh
-yarn typecheck && yarn lint && yarn prettier
+pnpm verify
 ```
 
-Full build (includes functions):
+Individual steps if you need them:
 
 ```sh
-yarn build
-```
-
-Functions only:
-
-```sh
-cd functions && yarn build
+pnpm typecheck
+pnpm lint
+pnpm prettier
+pnpm build               # full build, includes functions
+pnpm --dir functions build
 ```
 
 ## Architecture
@@ -42,7 +40,7 @@ cd functions && yarn build
 - Hooks in `src/hooks/` wrap lib calls with React Query caching
 - Path alias: `@/` resolves to `src/`
 - Route files in `src/routes/` use TanStack Router file-based routing
-- `functions/` is a separate yarn workspace with its own tsconfig
+- `functions/` is a separate pnpm package with its own tsconfig and lockfile
 - Custom ESLint plugins:
   - `branded-types` -- enforces branded type safety
   - `theme-guardrails` -- enforces style consistency with the MUI theme

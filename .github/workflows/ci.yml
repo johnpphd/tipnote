@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Write placeholder .env for vite build
+        # vite.config.ts calls loadEnv() which reads .env files, not process.env.
+        # Real values are supplied by the deployment environment, not CI.
+        run: |
+          printf '%s\n' \
+            'VITE_FIREBASE_PROJECT_ID=ci-placeholder' \
+            'VITE_FIREBASE_API_KEY=ci-placeholder' \
+            'VITE_FIREBASE_AUTH_DOMAIN=ci-placeholder.firebaseapp.com' \
+            'VITE_FIREBASE_STORAGE_BUCKET=ci-placeholder.firebasestorage.app' \
+            'VITE_FIREBASE_MESSAGING_SENDER_ID=0' \
+            'VITE_FIREBASE_APP_ID=ci-placeholder' \
+            > .env
+
+      - name: Install root dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install functions dependencies
+        run: pnpm --dir functions install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Prettier
+        run: pnpm prettier
+
+      - name: Build
+        run: pnpm build
