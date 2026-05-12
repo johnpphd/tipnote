@@ -12,6 +12,7 @@
     "lint": "eslint src/",
     "prettier": "prettier --check \"src/**/*.{ts,tsx}\" \"*.json\"",
     "prettier:fix": "prettier --write \"src/**/*.{ts,tsx}\" \"*.json\"",
+    "verify": "pnpm typecheck && pnpm lint && pnpm prettier && pnpm build",
     "preview": "vite preview"
   },
   "dependencies": {

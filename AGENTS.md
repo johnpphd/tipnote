@@ -8,21 +8,19 @@ Tipnote is a Notion-like document editor. Features include rich text editing wit
 
 ## Verification Commands
 
-Run after every code change:
+Run after every code change (typecheck, lint, prettier, build -- mirrors CI):
 
 ```sh
-pnpm typecheck && pnpm lint && pnpm prettier
+pnpm verify
 ```
 
-Full build (includes functions):
+Individual steps if you need them:
 
 ```sh
-pnpm build
-```
-
-Functions only:
-
-```sh
+pnpm typecheck
+pnpm lint
+pnpm prettier
+pnpm build               # full build, includes functions
 pnpm --dir functions build
 ```
 
