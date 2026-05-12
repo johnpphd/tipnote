@@ -15,6 +15,9 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
     "@copilotkit/runtime": "^1.54.0",
+    "@copilotkit/shared": "^1.54.0",
+    "@copilotkitnext/agent": "^1.54.0",
+    "@copilotkitnext/runtime": "^1.54.0",
     "@modelcontextprotocol/sdk": "^1.26.0",
     "express": "^4.21.0",
     "firebase-admin": "^13.0.0",
