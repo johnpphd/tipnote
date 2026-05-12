@@ -10,7 +10,7 @@
     "prettier": "echo 'handled at root level'"
   },
   "engines": {
-    "node": "22"
+    "node": "24"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",

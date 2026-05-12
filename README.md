@@ -32,7 +32,7 @@ A Notion-like document editor you can self-host. Write pages, build databases, s
 
 ### What You Need First
 
-1. **Node.js 22 or newer** -- check with `node -v`. If you need to install it, grab it from [nodejs.org](https://nodejs.org) or use [nvm](https://github.com/nvm-sh/nvm).
+1. **Node.js 24** -- check with `node -v`. If you need to install it, grab it from [nodejs.org](https://nodejs.org) or use [nvm](https://github.com/nvm-sh/nvm). The Firebase Cloud Functions runtime is pinned to Node 24, so matching locally avoids surprises.
 2. **pnpm** -- check with `pnpm -v`. Install with `npm install -g pnpm` if you don't have it.
 3. **Firebase CLI** -- install with `npm install -g firebase-tools`.
 4. **A Firebase project** -- the free Spark plan works fine for development.
