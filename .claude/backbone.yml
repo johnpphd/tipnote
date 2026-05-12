@@ -7,7 +7,7 @@ project:
   name: tipnote
   framework: React 19 + MUI 7 + TipTap 2 + TanStack Router
   language: TypeScript
-  package_manager: yarn
+  package_manager: pnpm
   port: 5180
 
 src:

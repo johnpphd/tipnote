@@ -17,14 +17,14 @@ A Notion-like document editor you can self-host. Write pages, build databases, s
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 19, Material UI 7, TanStack Router |
-| Editor | TipTap 2 (ProseMirror-based) |
-| State | Jotai atoms, React Query |
-| Backend | Firebase Auth, Firestore, Storage, Cloud Functions |
-| AI | CopilotKit + Anthropic Claude |
-| Build | Vite 6, TypeScript 5.7 |
+| Layer    | Technology                                         |
+| -------- | -------------------------------------------------- |
+| Frontend | React 19, Material UI 7, TanStack Router           |
+| Editor   | TipTap 2 (ProseMirror-based)                       |
+| State    | Jotai atoms, React Query                           |
+| Backend  | Firebase Auth, Firestore, Storage, Cloud Functions |
+| AI       | CopilotKit + Anthropic Claude                      |
+| Build    | Vite 6, TypeScript 5.7                             |
 
 ---
 
@@ -33,7 +33,7 @@ A Notion-like document editor you can self-host. Write pages, build databases, s
 ### What You Need First
 
 1. **Node.js 22 or newer** -- check with `node -v`. If you need to install it, grab it from [nodejs.org](https://nodejs.org) or use [nvm](https://github.com/nvm-sh/nvm).
-2. **Yarn** -- check with `yarn -v`. Install with `npm install -g yarn` if you don't have it.
+2. **pnpm** -- check with `pnpm -v`. Install with `npm install -g pnpm` if you don't have it.
 3. **Firebase CLI** -- install with `npm install -g firebase-tools`.
 4. **A Firebase project** -- the free Spark plan works fine for development.
 
@@ -75,8 +75,8 @@ You can find all of these in Firebase Console > Project Settings > Your Apps > W
 ### Step 4: Install Dependencies
 
 ```bash
-yarn install
-cd functions && yarn install && cd ..
+pnpm install
+pnpm --dir functions install
 ```
 
 This installs packages for both the frontend and the Cloud Functions backend.
@@ -94,7 +94,7 @@ The first command opens a browser to sign in. The second links this folder to yo
 ### Step 6: Start the App
 
 ```bash
-yarn dev
+pnpm dev
 ```
 
 Open [http://localhost:5180](http://localhost:5180) in your browser. That's it -- you're running TipNote locally.
@@ -110,14 +110,14 @@ The AI chat and MCP server features require Cloud Functions. You can skip this i
 ### Local Development (Emulator)
 
 ```bash
-cd functions && yarn build && cd ..
+pnpm --dir functions build
 firebase emulators:start --only functions,firestore,auth,storage
 ```
 
 Then in another terminal:
 
 ```bash
-yarn dev
+pnpm dev
 ```
 
 ### Deploy to Production
@@ -146,7 +146,7 @@ firebase deploy --only functions
 ## (Optional) Deploy to the Web
 
 ```bash
-yarn build
+pnpm build
 firebase deploy --only hosting
 ```
 
@@ -178,34 +178,34 @@ tipnote/
 
 ## Scripts
 
-| Command | What It Does |
-|---------|-------------|
-| `yarn dev` | Start the dev server on port 5180 |
-| `yarn build` | Full production build (types + bundle) |
-| `yarn typecheck` | Check TypeScript types without building |
-| `yarn lint` | Run ESLint (includes branded-type and theme rules) |
-| `yarn prettier` | Check code formatting |
-| `yarn prettier:fix` | Auto-fix formatting |
+| Command             | What It Does                                       |
+| ------------------- | -------------------------------------------------- |
+| `pnpm dev`          | Start the dev server on port 5180                  |
+| `pnpm build`        | Full production build (types + bundle)             |
+| `pnpm typecheck`    | Check TypeScript types without building            |
+| `pnpm lint`         | Run ESLint (includes branded-type and theme rules) |
+| `pnpm prettier`     | Check code formatting                              |
+| `pnpm prettier:fix` | Auto-fix formatting                                |
 
 ## Environment Variables Reference
 
 ### Frontend (`.env` file)
 
-| Variable | Description |
-|----------|-------------|
-| `VITE_FIREBASE_API_KEY` | Your Firebase API key |
-| `VITE_FIREBASE_AUTH_DOMAIN` | e.g. `your-project.firebaseapp.com` |
-| `VITE_FIREBASE_PROJECT_ID` | Your Firebase project ID |
-| `VITE_FIREBASE_STORAGE_BUCKET` | e.g. `your-project.firebasestorage.app` |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Numeric sender ID |
-| `VITE_FIREBASE_APP_ID` | Your Firebase app ID |
+| Variable                            | Description                             |
+| ----------------------------------- | --------------------------------------- |
+| `VITE_FIREBASE_API_KEY`             | Your Firebase API key                   |
+| `VITE_FIREBASE_AUTH_DOMAIN`         | e.g. `your-project.firebaseapp.com`     |
+| `VITE_FIREBASE_PROJECT_ID`          | Your Firebase project ID                |
+| `VITE_FIREBASE_STORAGE_BUCKET`      | e.g. `your-project.firebasestorage.app` |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Numeric sender ID                       |
+| `VITE_FIREBASE_APP_ID`              | Your Firebase app ID                    |
 
 ### Cloud Functions (set via Firebase CLI)
 
-| Variable | How to Set | Description |
-|----------|-----------|-------------|
-| `BASE_URL` | `functions:config:set` | Your app's public URL (for OAuth) |
-| `ANTHROPIC_API_KEY` | `functions:secrets:set` | Anthropic API key for AI chat |
+| Variable               | How to Set              | Description                          |
+| ---------------------- | ----------------------- | ------------------------------------ |
+| `BASE_URL`             | `functions:config:set`  | Your app's public URL (for OAuth)    |
+| `ANTHROPIC_API_KEY`    | `functions:secrets:set` | Anthropic API key for AI chat        |
 | `BRAVE_SEARCH_API_KEY` | `functions:secrets:set` | Brave Search key for web search tool |
 
 > `projectId`, `authDomain`, and `storageBucket` are auto-injected by Firebase in deployed functions -- you don't need to set them.

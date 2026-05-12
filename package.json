@@ -1,12 +1,13 @@
 {
   "name": "tipnote",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && yarn build:functions",
-    "build:functions": "cd functions && yarn --ignore-engines build",
+    "build": "tsc -b && vite build && pnpm build:functions",
+    "build:functions": "pnpm --dir functions build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/",
     "prettier": "prettier --check \"src/**/*.{ts,tsx}\" \"*.json\"",
