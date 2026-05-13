@@ -53,7 +53,7 @@ function SharedPageView() {
   );
 
   const handleViewChange = useCallback(
-    (viewId: ViewBrandId) => {
+    (viewId: ViewBrandId | undefined) => {
       void navigate({
         to: "/shared/$pageId",
         params: { pageId: rawPageId },

@@ -9,18 +9,21 @@ import {
 import type { PageCreate } from "@/types";
 import {
   PageBrandId,
-  type WorkspaceBrandId,
-  type UserBrandId,
   type Title,
   type IconEmoji,
   type ImageUrl,
+  type WorkspaceBrandId,
+  type UserBrandId,
 } from "@/types";
 
 export async function createPage(
-  workspaceId: WorkspaceBrandId,
-  userId: UserBrandId,
+  workspaceId: WorkspaceBrandId | undefined,
+  userId: UserBrandId | undefined,
   data: PageCreate,
 ): Promise<PageBrandId> {
+  if (!workspaceId || !userId) {
+    throw new Error("createPage: workspaceId and userId are required");
+  }
   const docRef = await addDoc(pagesCollection(), {
     title: data.title || "Untitled",
     icon: data.icon || "",
@@ -43,7 +46,7 @@ export async function createPage(
 }
 
 export async function updatePage(
-  pageId: PageBrandId,
+  pageId: PageBrandId | undefined,
   data: Partial<{
     title: Title;
     icon: IconEmoji;
@@ -51,26 +54,36 @@ export async function updatePage(
     description: Title;
   }>,
 ): Promise<void> {
+  if (!pageId) return;
   await updateDoc(pageRef(pageId), {
     ...data,
     updatedAt: serverTimestamp(),
   });
 }
 
-export async function softDeletePage(pageId: PageBrandId): Promise<void> {
+export async function softDeletePage(
+  pageId: PageBrandId | undefined,
+): Promise<void> {
+  if (!pageId) return;
   await updateDoc(pageRef(pageId), {
     isDeleted: true,
     updatedAt: serverTimestamp(),
   });
 }
 
-export async function restorePage(pageId: PageBrandId): Promise<void> {
+export async function restorePage(
+  pageId: PageBrandId | undefined,
+): Promise<void> {
+  if (!pageId) return;
   await updateDoc(pageRef(pageId), {
     isDeleted: false,
     updatedAt: serverTimestamp(),
   });
 }
 
-export async function permanentDeletePage(pageId: PageBrandId): Promise<void> {
+export async function permanentDeletePage(
+  pageId: PageBrandId | undefined,
+): Promise<void> {
+  if (!pageId) return;
   await deleteDoc(pageRef(pageId));
 }

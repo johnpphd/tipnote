@@ -1,4 +1,3 @@
-import { useState, useMemo } from "react";
 import {
   Box,
   Drawer,
@@ -10,8 +9,6 @@ import {
   Typography,
   Menu,
   MenuItem,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -26,14 +23,15 @@ import {
   DarkMode as DarkModeIcon,
 } from "@mui/icons-material";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { usePages } from "@/hooks/usePages";
-import { useSharedPages } from "@/hooks/useSharedPages";
 import { useAuth } from "@/hooks/useAuth";
 import { createPage } from "@/lib/database/pages";
 import { createDatabase } from "@/lib/database/databases";
 import { useAtom } from "jotai";
 import { sidebarOpenAtom, themeModeAtom } from "@/atoms/workspace";
 import { useDragResize } from "@/hooks/useDragResize";
+import { useSidebarMobile } from "./_hooks/useSidebarMobile";
+import { useSidebarMenuState } from "./_hooks/useSidebarMenuState";
+import { useSidebarData } from "./_hooks/useSidebarData";
 import PageTreeItem from "./PageTreeItem";
 import TrashPanel from "./TrashPanel";
 import { FONT_WEIGHT_SEMIBOLD } from "@/theme/fontWeights";
@@ -49,27 +47,21 @@ interface SidebarProps {
 export default function Sidebar({ workspaceId, onSearchClick }: SidebarProps) {
   const [open, setOpen] = useAtom(sidebarOpenAtom);
   const [themeMode, setThemeMode] = useAtom(themeModeAtom);
-  const [addMenuAnchor, setAddMenuAnchor] = useState<HTMLElement | null>(null);
-  const [showTrash, setShowTrash] = useState(false);
+  const { addMenuAnchor, setAddMenuAnchor, showTrash, setShowTrash } =
+    useSidebarMenuState();
   const { user } = useAuth();
-  const { data: pages } = usePages(workspaceId);
-  const { data: sharedPages } = useSharedPages(
-    user?.uid ? UserBrandId.parse(user.uid) : undefined,
+  const { pages, sharedPages, rootPages } = useSidebarData(
+    workspaceId,
+    user?.uid,
   );
   const navigate = useNavigate();
   const params = useParams({ strict: false });
   const currentPageId = (params as Record<string, string | undefined>).pageId;
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useSidebarMobile();
   const { ratio, isDragging, containerRef, onDividerMouseDown } =
     useDragResize();
 
   const hasSharedPages = Boolean(sharedPages && sharedPages.length > 0);
-
-  const rootPages = useMemo(() => {
-    const allPages = pages ?? [];
-    return allPages.filter((p) => !p.parentId);
-  }, [pages]);
 
   const handleCreatePage = async () => {
     if (!user) return;

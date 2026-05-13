@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   IconButton,
@@ -270,12 +270,13 @@ function DebouncedTextInput({
   value: unknown;
   onChange: (value: unknown) => void;
 }) {
-  const [local, setLocal] = useState(typeof value === "string" ? value : "");
   const externalValue = typeof value === "string" ? value : "";
-
-  useEffect(() => {
+  const [local, setLocal] = useState(externalValue);
+  const [lastExternal, setLastExternal] = useState(externalValue);
+  if (externalValue !== lastExternal) {
+    setLastExternal(externalValue);
     setLocal(externalValue);
-  }, [externalValue]);
+  }
 
   const debouncedOnChange = useDebouncedCallback((v: string) => {
     onChange(v);

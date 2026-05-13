@@ -27,21 +27,25 @@ export default function RowPropertiesPanel({
     Set<PropertyBrandId>
   >(new Set());
 
-  const toggleExpanded = useCallback((propertyId: PropertyBrandId) => {
-    setExpandedProperties((prev) => {
-      const next = new Set(prev);
-      if (next.has(propertyId)) {
-        next.delete(propertyId);
-      } else {
-        next.add(propertyId);
-      }
-      return next;
-    });
-  }, []);
+  const toggleExpanded = useCallback(
+    (propertyId: PropertyBrandId | undefined) => {
+      if (!propertyId) return;
+      setExpandedProperties((prev) => {
+        const next = new Set(prev);
+        if (next.has(propertyId)) {
+          next.delete(propertyId);
+        } else {
+          next.add(propertyId);
+        }
+        return next;
+      });
+    },
+    [],
+  );
 
   const handlePropertyChange = useCallback(
-    (propertyId: PropertyBrandId, value: PropertyValue) => {
-      if (!row) return;
+    (propertyId: PropertyBrandId | undefined, value: PropertyValue) => {
+      if (!row || !propertyId) return;
       void updateDatabaseRow(row.id, { [propertyId]: value });
     },
     [row],

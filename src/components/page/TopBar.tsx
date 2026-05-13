@@ -15,6 +15,8 @@ import ShareDialog from "./ShareDialog";
 import type { Page } from "@/types";
 import { FONT_WEIGHT_REGULAR, FONT_WEIGHT_MEDIUM } from "@/theme/fontWeights";
 
+const TOPBAR_SHADOW = "0 1px 6px rgba(0, 0, 0, 0.06)";
+
 interface TopBarProps {
   page: Page;
 }
@@ -39,7 +41,7 @@ export default function TopBar({ page }: TopBarProps) {
         pl: sidebarOpen ? { xs: 1, sm: 2 } : { xs: 6, sm: 6 },
         py: 0.5,
         minHeight: 44,
-        boxShadow: "0 1px 6px rgba(0, 0, 0, 0.06)",
+        boxShadow: TOPBAR_SHADOW,
         bgcolor: "background.default",
         position: "sticky",
         top: 0,
@@ -110,7 +112,7 @@ export default function TopBar({ page }: TopBarProps) {
                 fontSize: "13px",
                 color: "text.secondary",
                 cursor: "pointer",
-                border: "none",
+                border: 0,
                 background: "none",
                 p: 0,
                 whiteSpace: "nowrap",

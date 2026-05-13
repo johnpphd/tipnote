@@ -1,0 +1,18 @@
+export const nature2: Record<string, string> = {
+  "🦋": "butterfly",
+  "🐌": "snail",
+  "🐞": "ladybug",
+  "🐜": "ant",
+  "🪲": "beetle",
+  "🐢": "turtle tortoise",
+  "🐍": "snake",
+  "🦎": "lizard",
+  "🐙": "octopus",
+  "🦑": "squid",
+  "🐠": "fish tropical",
+  "🐟": "fish",
+  "🐬": "dolphin",
+  "🐳": "whale spouting",
+  "🐋": "whale",
+  "🦈": "shark",
+};

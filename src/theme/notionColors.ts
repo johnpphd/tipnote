@@ -19,3 +19,9 @@ export const NOTION_COLORS: Record<string, string> = {
 export function resolveColor(color: string): string {
   return NOTION_COLORS[color] ?? color;
 }
+
+/**
+ * Foreground color used for text/icons rendered on top of a user-picked
+ * NOTION_COLORS swatch chip. Stays near-white in both themes for contrast.
+ */
+export const ON_CHIP_COLOR = "#ffffff";

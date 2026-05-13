@@ -25,20 +25,23 @@ import {
   DatabaseBrandId,
   ViewBrandId,
   PropertyBrandId,
-  RowBrandId,
+  type RowBrandId,
   type WorkspaceBrandId,
   type UserBrandId,
 } from "@/types";
 
 export async function createDatabase(
-  workspaceId: WorkspaceBrandId,
-  userId: UserBrandId,
+  workspaceId: WorkspaceBrandId | undefined,
+  userId: UserBrandId | undefined,
   title: string,
 ): Promise<{
   databaseId: DatabaseBrandId;
   pageId: PageBrandId;
   viewId: ViewBrandId;
 }> {
+  if (!workspaceId || !userId) {
+    throw new Error("createDatabase: workspaceId and userId are required");
+  }
   const titlePropId = PropertyBrandId.parse(uuidv4());
 
   // Create the page for the database
@@ -105,9 +108,10 @@ export async function createDatabase(
 }
 
 export async function addProperty(
-  databaseId: DatabaseBrandId,
+  databaseId: DatabaseBrandId | undefined,
   property: PropertyDefinition,
 ): Promise<void> {
+  if (!databaseId) return;
   await updateDoc(databaseRef(databaseId), {
     [`properties.${property.id}`]: property,
     updatedAt: serverTimestamp(),
@@ -115,9 +119,10 @@ export async function addProperty(
 }
 
 export async function updateProperty(
-  databaseId: DatabaseBrandId,
+  databaseId: DatabaseBrandId | undefined,
   property: PropertyDefinition,
 ): Promise<void> {
+  if (!databaseId) return;
   await updateDoc(databaseRef(databaseId), {
     [`properties.${property.id}`]: property,
     updatedAt: serverTimestamp(),
@@ -125,16 +130,18 @@ export async function updateProperty(
 }
 
 export async function updatePropertyOrder(
-  databaseId: DatabaseBrandId,
+  databaseId: DatabaseBrandId | undefined,
   propertyOrder: PropertyBrandId[],
 ): Promise<void> {
+  if (!databaseId) return;
   await updateDoc(databaseRef(databaseId), { propertyOrder });
 }
 
 export async function deleteProperty(
-  databaseId: DatabaseBrandId,
-  propertyId: PropertyBrandId,
+  databaseId: DatabaseBrandId | undefined,
+  propertyId: PropertyBrandId | undefined,
 ): Promise<void> {
+  if (!databaseId || !propertyId) return;
   const { deleteField } = await import("firebase/firestore");
   await updateDoc(databaseRef(databaseId), {
     [`properties.${propertyId}`]: deleteField(),
@@ -142,15 +149,20 @@ export async function deleteProperty(
 }
 
 export async function createDatabaseRow(
-  workspaceId: WorkspaceBrandId,
-  userId: UserBrandId,
-  databaseId: DatabaseBrandId,
+  workspaceId: WorkspaceBrandId | undefined,
+  userId: UserBrandId | undefined,
+  databaseId: DatabaseBrandId | undefined,
   properties: Record<PropertyBrandId, PropertyValue> = {} as Record<
     PropertyBrandId,
     PropertyValue
   >,
-  titlePropertyId?: PropertyBrandId,
+  titlePropertyId?: PropertyBrandId | undefined,
 ): Promise<PageBrandId> {
+  if (!workspaceId || !userId || !databaseId) {
+    throw new Error(
+      "createDatabaseRow: workspaceId, userId, and databaseId are required",
+    );
+  }
   const pageTitle =
     titlePropertyId && typeof properties[titlePropertyId] === "string"
       ? (properties[titlePropertyId] as string)
@@ -195,9 +207,10 @@ export async function createDatabaseRow(
 }
 
 export async function updateDatabaseRow(
-  rowId: RowBrandId,
+  rowId: RowBrandId | undefined,
   properties: Record<PropertyBrandId, PropertyValue>,
 ): Promise<void> {
+  if (!rowId) return;
   // Merge individual property fields so we don't overwrite the whole object
   const updates: Record<string, PropertyValue> = {};
   for (const [key, value] of Object.entries(properties)) {
@@ -210,9 +223,10 @@ export async function updateDatabaseRow(
 }
 
 export async function deleteDatabaseRow(
-  rowId: RowBrandId,
-  pageId: PageBrandId,
+  rowId: RowBrandId | undefined,
+  pageId: PageBrandId | undefined,
 ): Promise<void> {
+  if (!rowId || !pageId) return;
   // Soft-delete the page
   await updateDoc(pageRef(pageId), {
     isDeleted: true,
@@ -224,12 +238,17 @@ export async function deleteDatabaseRow(
 }
 
 export async function createDatabaseView(
-  workspaceId: WorkspaceBrandId,
-  databaseId: DatabaseBrandId,
+  workspaceId: WorkspaceBrandId | undefined,
+  databaseId: DatabaseBrandId | undefined,
   name: string,
   type: ViewType,
   visibleProperties: PropertyBrandId[],
 ): Promise<ViewBrandId> {
+  if (!workspaceId || !databaseId) {
+    throw new Error(
+      "createDatabaseView: workspaceId and databaseId are required",
+    );
+  }
   const viewDocRef = await addDoc(dbViewsCollection(), {
     databaseId,
     workspaceId,
@@ -245,7 +264,7 @@ export async function createDatabaseView(
 }
 
 export async function updateDatabaseView(
-  viewId: ViewBrandId,
+  viewId: ViewBrandId | undefined,
   updates: {
     name?: string;
     type?: ViewType;
@@ -297,16 +316,18 @@ export async function updateDatabaseView(
   if (updates.name !== undefined) docUpdates.name = updates.name;
   if (updates.type !== undefined) docUpdates.type = updates.type;
 
+  if (!viewId) return;
   await updateDoc(dbViewRef(viewId), docUpdates);
 }
 
 export async function deleteDatabaseView(
-  databaseId: DatabaseBrandId,
-  viewId: ViewBrandId,
-  currentDefaultViewId: ViewBrandId,
+  databaseId: DatabaseBrandId | undefined,
+  viewId: ViewBrandId | undefined,
+  currentDefaultViewId: ViewBrandId | undefined,
   allViewIds: ViewBrandId[],
   viewOrder?: ViewBrandId[],
 ): Promise<ViewBrandId | null> {
+  if (!databaseId || !viewId) return null;
   // Cannot delete the last view
   if (allViewIds.length <= 1) return null;
 
@@ -333,10 +354,11 @@ export async function deleteDatabaseView(
 }
 
 export async function updateViewOrder(
-  databaseId: DatabaseBrandId,
+  databaseId: DatabaseBrandId | undefined,
   viewOrder: ViewBrandId[],
-  defaultViewId: ViewBrandId,
+  defaultViewId: ViewBrandId | undefined,
 ): Promise<void> {
+  if (!databaseId) return;
   await updateDoc(databaseRef(databaseId), { viewOrder, defaultViewId });
 }
 

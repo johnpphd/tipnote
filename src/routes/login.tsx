@@ -18,6 +18,11 @@ import { useAtom } from "jotai";
 import { workspaceIdAtom } from "@/atoms/workspace";
 import { UserBrandId } from "@/types";
 
+const GLASS_BORDER = "1px solid rgba(255,255,255,0.1)";
+const GLASS_BORDER_COLOR = "rgba(255,255,255,0.2)";
+const GLASS_BORDER_COLOR_HOVER = "rgba(255,255,255,0.4)";
+const GLASS_BG_HOVER = "rgba(255,255,255,0.04)";
+
 export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
@@ -104,7 +109,7 @@ function LoginPage() {
           mx: { xs: 2, sm: 0 },
           p: { xs: 3, sm: 4 },
           borderRadius: 3,
-          border: "1px solid rgba(255,255,255,0.1)",
+          border: GLASS_BORDER,
           bgcolor: "background.paper",
         }}
       >
@@ -127,11 +132,11 @@ function LoginPage() {
             textTransform: "none",
             fontSize: "14px",
             py: 1.25,
-            borderColor: "rgba(255,255,255,0.2)",
+            borderColor: GLASS_BORDER_COLOR,
             color: "text.primary",
             "&:hover": {
-              borderColor: "rgba(255,255,255,0.4)",
-              bgcolor: "rgba(255,255,255,0.04)",
+              borderColor: GLASS_BORDER_COLOR_HOVER,
+              bgcolor: GLASS_BG_HOVER,
             },
           }}
         >

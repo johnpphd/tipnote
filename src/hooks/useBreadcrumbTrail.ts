@@ -1,11 +1,10 @@
 import { useMemo } from "react";
 import { usePages } from "./usePages";
-import type { Page } from "@/types";
-import type { WorkspaceBrandId } from "@/types";
+import type { Page, WorkspaceBrandId } from "@/types";
 
 export function useBreadcrumbTrail(
   page: Page,
-  workspaceId: WorkspaceBrandId,
+  workspaceId: WorkspaceBrandId | undefined,
 ): Page[] {
   const { data: pages } = usePages(workspaceId);
 

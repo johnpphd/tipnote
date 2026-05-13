@@ -11,13 +11,13 @@ import {
 import { setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import type { Workspace } from "@/types";
-import { WorkspaceBrandId, parseWorkspace } from "@/types";
-import type { UserBrandId } from "@/types";
+import { WorkspaceBrandId, parseWorkspace, type UserBrandId } from "@/types";
 
 export async function createWorkspace(
-  userId: UserBrandId,
+  userId: UserBrandId | undefined,
   name: string,
 ): Promise<WorkspaceBrandId> {
+  if (!userId) throw new Error("createWorkspace: userId is required");
   const ref = doc(collection(db, "workspaces"));
   await setDoc(ref, {
     name,
@@ -30,9 +30,10 @@ export async function createWorkspace(
 }
 
 export async function getOrCreateWorkspace(
-  userId: UserBrandId,
+  userId: UserBrandId | undefined,
   name: string,
 ): Promise<WorkspaceBrandId> {
+  if (!userId) throw new Error("getOrCreateWorkspace: userId is required");
   const q = query(
     collection(db, "workspaces"),
     where("memberIds", "array-contains", userId),
@@ -46,9 +47,13 @@ export async function getOrCreateWorkspace(
 }
 
 export function subscribeToWorkspace(
-  workspaceId: WorkspaceBrandId,
+  workspaceId: WorkspaceBrandId | undefined,
   callback: (workspace: Workspace | null) => void,
 ) {
+  if (!workspaceId) {
+    callback(null);
+    return () => {};
+  }
   return onSnapshot(doc(db, "workspaces", workspaceId), (snap) => {
     if (snap.exists()) {
       callback(parseWorkspace(snap.id, snap.data()!));
