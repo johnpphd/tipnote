@@ -13,7 +13,7 @@
     "node": "24"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.80.0",
+    "@anthropic-ai/sdk": "^0.95.2",
     "@copilotkit/runtime": "^1.54.0",
     "@copilotkit/shared": "^1.54.0",
     "@copilotkitnext/agent": "^1.54.0",
