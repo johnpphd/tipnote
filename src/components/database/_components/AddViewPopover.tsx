@@ -51,7 +51,9 @@ export default function AddViewPopover({
             </ListItemIcon>
             <ListItemText
               primary={capitalize(type)}
-              primaryTypographyProps={{ variant: "body2" }}
+              slotProps={{
+                primary: { variant: "body2" },
+              }}
             />
           </ListItemButton>
         ))}

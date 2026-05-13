@@ -2,7 +2,7 @@ import { memo, useMemo } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Box, Paper, Typography, IconButton } from "@mui/material";
-import { DeleteOutline as DeleteIcon } from "@mui/icons-material";
+import { DeleteOutlined as DeleteIcon } from "@mui/icons-material";
 import type { Database, DatabaseRow, DatabaseView } from "@/types";
 import type { PropertyBrandId } from "@/types";
 import CellDisplay from "../properties/CellDisplay";

@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import {
-  CheckCircleOutline as SuccessIcon,
-  ErrorOutline as ErrorIcon,
+  CheckCircleOutlined as SuccessIcon,
+  ErrorOutlined as ErrorIcon,
   Build as ToolIcon,
 } from "@mui/icons-material";
 import type { ToolResult } from "@/lib/chat/types";

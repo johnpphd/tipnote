@@ -81,13 +81,16 @@ export const SlashMenuList = forwardRef<SlashMenuRef, SlashMenuProps>(
               <ListItemText
                 primary={item.title}
                 secondary={item.description}
-                primaryTypographyProps={{
-                  variant: "body2",
-                  fontWeight: FONT_WEIGHT_MEDIUM,
-                }}
-                secondaryTypographyProps={{
-                  variant: "body2",
-                  fontSize: "11px",
+                slotProps={{
+                  primary: {
+                    variant: "body2",
+                    sx: { fontWeight: FONT_WEIGHT_MEDIUM },
+                  },
+
+                  secondary: {
+                    variant: "body2",
+                    sx: { fontSize: "11px" },
+                  },
                 }}
               />
             </ListItemButton>

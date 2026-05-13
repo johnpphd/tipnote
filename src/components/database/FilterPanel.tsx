@@ -196,7 +196,9 @@ export default function FilterPanel({
                     <ListItemIcon sx={{ minWidth: 28 }}>{icon}</ListItemIcon>
                     <ListItemText
                       primary={prop.name}
-                      primaryTypographyProps={{ fontSize: "12px" }}
+                      slotProps={{
+                        primary: { sx: { fontSize: "12px" } },
+                      }}
                     />
                   </ListItemButton>
                 );

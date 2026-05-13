@@ -25,7 +25,7 @@ import {
   MoreHoriz as MoreHorizIcon,
   Edit as EditIcon,
   VisibilityOff as VisibilityOffIcon,
-  DeleteOutline as DeleteOutlineIcon,
+  DeleteOutlined as DeleteOutlinedIcon,
   Check as CheckIcon,
 } from "@mui/icons-material";
 import type { Database, DatabaseRow, DatabaseView } from "@/types";
@@ -246,7 +246,6 @@ export default function BoardColumn({
           </>
         )}
       </Box>
-
       {/* Cards */}
       <SortableContext
         items={sortedRowIds}
@@ -279,7 +278,6 @@ export default function BoardColumn({
           ))}
         </Box>
       </SortableContext>
-
       {/* Column menu popover */}
       <Popover
         open={Boolean(menuAnchor)}
@@ -302,7 +300,9 @@ export default function BoardColumn({
               </ListItemIcon>
               <ListItemText
                 primary="Edit groups"
-                primaryTypographyProps={{ sx: { fontSize: "13px" } }}
+                slotProps={{
+                  primary: { sx: { fontSize: "13px" } },
+                }}
               />
             </ListItemButton>
 
@@ -321,7 +321,9 @@ export default function BoardColumn({
                 </ListItemIcon>
                 <ListItemText
                   primary="Hide group"
-                  primaryTypographyProps={{ sx: { fontSize: "13px" } }}
+                  slotProps={{
+                    primary: { sx: { fontSize: "13px" } },
+                  }}
                 />
               </ListItemButton>
             )}
@@ -335,14 +337,16 @@ export default function BoardColumn({
                 sx={{ px: 1.5, py: 0.5 }}
               >
                 <ListItemIcon sx={{ minWidth: 28 }}>
-                  <DeleteOutlineIcon
+                  <DeleteOutlinedIcon
                     sx={{ fontSize: 16, color: "error.main" }}
                   />
                 </ListItemIcon>
                 <ListItemText
                   primary={`Delete ${rows.length} page${rows.length !== 1 ? "s" : ""}`}
-                  primaryTypographyProps={{
-                    sx: { fontSize: "13px", color: "error.main" },
+                  slotProps={{
+                    primary: {
+                      sx: { fontSize: "13px", color: "error.main" },
+                    },
                   }}
                 />
               </ListItemButton>

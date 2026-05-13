@@ -9,7 +9,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import {
   Close as CloseIcon,
-  DeleteOutline as ClearIcon,
+  DeleteOutlined as ClearIcon,
 } from "@mui/icons-material";
 import { useAtom, useAtomValue } from "jotai";
 import { chatOpenAtom } from "@/atoms/chat";
@@ -159,8 +159,10 @@ export default function ChatPanel() {
         open={open}
         onClose={() => setOpen(false)}
         ModalProps={{ keepMounted: true }}
-        PaperProps={{
-          sx: { bgcolor: "background.paper" },
+        slotProps={{
+          paper: {
+            sx: { bgcolor: "background.paper" },
+          },
         }}
       >
         {drawerContent}

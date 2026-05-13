@@ -130,7 +130,9 @@ export default function AddPropertyMenu({
                   <ListItemIcon sx={{ minWidth: 32 }}>{icon}</ListItemIcon>
                   <ListItemText
                     primary={label}
-                    primaryTypographyProps={{ variant: "body2" }}
+                    slotProps={{
+                      primary: { variant: "body2" },
+                    }}
                   />
                 </ListItemButton>
               ))}

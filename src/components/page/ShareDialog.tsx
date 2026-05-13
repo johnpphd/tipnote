@@ -96,11 +96,13 @@ export default function ShareDialog({ open, onClose, page }: ShareDialogProps) {
       onClose={onClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: {
-          bgcolor: "background.paper",
-          borderRadius: 2,
-          maxWidth: 480,
+      slotProps={{
+        paper: {
+          sx: {
+            bgcolor: "background.paper",
+            borderRadius: 2,
+            maxWidth: 480,
+          },
         },
       }}
     >
@@ -120,7 +122,6 @@ export default function ShareDialog({ open, onClose, page }: ShareDialogProps) {
           <CloseIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </DialogTitle>
-
       <DialogContent sx={{ px: 2, pb: 2.5 }}>
         {/* Invite by email */}
         <Box sx={{ display: "flex", gap: 1, mb: 1 }}>

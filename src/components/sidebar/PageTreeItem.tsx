@@ -100,7 +100,7 @@ function PageTreeItem({
         )}
         <ListItemIcon sx={{ minWidth: 24 }}>
           {page.icon ? (
-            <Typography fontSize="14px">{page.icon}</Typography>
+            <Typography sx={{ fontSize: "14px" }}>{page.icon}</Typography>
           ) : page.type === "database" ? (
             <DatabaseIcon sx={{ fontSize: 16, color: "text.secondary" }} />
           ) : (
@@ -109,15 +109,17 @@ function PageTreeItem({
         </ListItemIcon>
         <ListItemText
           primary={page.title || "Untitled"}
-          primaryTypographyProps={{
-            variant: "body2",
-            noWrap: true,
-            sx: {
-              fontSize: "13px",
-              fontWeight:
-                currentPageId === page.id
-                  ? FONT_WEIGHT_MEDIUM
-                  : FONT_WEIGHT_REGULAR,
+          slotProps={{
+            primary: {
+              variant: "body2",
+              noWrap: true,
+              sx: {
+                fontSize: "13px",
+                fontWeight:
+                  currentPageId === page.id
+                    ? FONT_WEIGHT_MEDIUM
+                    : FONT_WEIGHT_REGULAR,
+              },
             },
           }}
         />
@@ -138,7 +140,6 @@ function PageTreeItem({
           <DeleteIcon sx={{ fontSize: 14 }} />
         </IconButton>
       </ListItemButton>
-
       {hasChildren && (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           {children.map((child) => (

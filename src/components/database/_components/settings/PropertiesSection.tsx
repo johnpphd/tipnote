@@ -44,7 +44,6 @@ export default function PropertiesSection({
         title="Property visibility"
         onBack={() => setSettingsSection("main")}
       />
-
       <DndContext
         sensors={propertySensors as never}
         collisionDetection={closestCenter}
@@ -71,7 +70,6 @@ export default function PropertiesSection({
           </Box>
         </SortableContext>
       </DndContext>
-
       {hiddenIds.length > 0 && (
         <>
           <Divider sx={{ mx: 1.5 }} />
@@ -91,8 +89,10 @@ export default function PropertiesSection({
                   </ListItemIcon>
                   <ListItemText
                     primary={prop.name}
-                    primaryTypographyProps={{
-                      sx: { fontSize: "13px", color: "text.secondary" },
+                    slotProps={{
+                      primary: {
+                        sx: { fontSize: "13px", color: "text.secondary" },
+                      },
                     }}
                   />
                 </ListItemButton>

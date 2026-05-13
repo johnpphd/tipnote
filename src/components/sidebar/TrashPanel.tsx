@@ -101,7 +101,6 @@ export default function TrashPanel({
           Pages in trash can be restored or permanently deleted.
         </Typography>
       </Box>
-
       <List dense>
         {(!deletedPages || deletedPages.length === 0) && (
           <Box sx={{ p: 3, textAlign: "center" }}>
@@ -114,17 +113,19 @@ export default function TrashPanel({
           <ListItemButton key={page.id} sx={{ py: 0.5, px: 2 }}>
             <ListItemIcon sx={{ minWidth: 28 }}>
               {page.icon ? (
-                <Typography fontSize="14px">{page.icon}</Typography>
+                <Typography sx={{ fontSize: "14px" }}>{page.icon}</Typography>
               ) : (
                 <PageIcon sx={{ fontSize: 16, color: "text.secondary" }} />
               )}
             </ListItemIcon>
             <ListItemText
               primary={page.title || "Untitled"}
-              primaryTypographyProps={{
-                variant: "body2",
-                noWrap: true,
-                sx: { fontSize: "13px" },
+              slotProps={{
+                primary: {
+                  variant: "body2",
+                  noWrap: true,
+                  sx: { fontSize: "13px" },
+                },
               }}
             />
             <IconButton
@@ -154,7 +155,6 @@ export default function TrashPanel({
           </ListItemButton>
         ))}
       </List>
-
       <Dialog
         open={Boolean(confirmDeleteId)}
         onClose={() => setConfirmDeleteId(null)}
