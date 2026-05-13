@@ -20,7 +20,7 @@ export function hashToken(token: string): string {
  */
 export function verifyPkceS256(
   codeVerifier: string,
-  codeChallenge: string
+  codeChallenge: string,
 ): boolean {
   const computed = createHash("sha256")
     .update(codeVerifier)

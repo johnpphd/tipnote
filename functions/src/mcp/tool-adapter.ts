@@ -63,7 +63,7 @@ function jsonSchemaPropertyToZod(prop: Record<string, unknown>): z.ZodTypeAny {
  * Convert an Anthropic tool's input_schema to a Zod shape for McpServer.tool().
  */
 function buildZodShape(
-  inputSchema: Record<string, unknown>
+  inputSchema: Record<string, unknown>,
 ): Record<string, z.ZodTypeAny> {
   const properties = (inputSchema.properties || {}) as Record<
     string,
@@ -93,7 +93,7 @@ export function registerMcpTools(server: McpServer): void {
 
     const description = tool.description || tool.name;
     const zodShape = buildZodShape(
-      tool.input_schema as Record<string, unknown>
+      tool.input_schema as Record<string, unknown>,
     );
 
     // Use the 4-arg overload: tool(name, description, paramsSchema, cb)
@@ -135,7 +135,7 @@ export function registerMcpTools(server: McpServer): void {
           ],
           isError: !result.success,
         };
-      }
+      },
     );
   }
 }

@@ -32,7 +32,7 @@ export function createMcpApp(): express.Application {
       baseUrl: new URL(BASE_URL),
       serviceDocumentationUrl: new URL(BASE_URL),
       scopesSupported: ["read", "write"],
-    })
+    }),
   );
 
   // Custom callback endpoint for the consent page POST

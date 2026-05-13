@@ -24,7 +24,7 @@ interface ToolContext {
  */
 async function verifyPageAccess(
   pageId: string,
-  workspaceId: string
+  workspaceId: string,
 ): Promise<
   | { ok: true; data: FirebaseFirestore.DocumentData }
   | { ok: false; error: ToolResult }
@@ -49,7 +49,7 @@ async function verifyPageAccess(
  */
 async function verifyDatabaseAccess(
   databaseId: string,
-  workspaceId: string
+  workspaceId: string,
 ): Promise<
   | { ok: true; data: FirebaseFirestore.DocumentData; databaseId: string }
   | { ok: false; error: ToolResult }
@@ -98,7 +98,7 @@ async function verifyDatabaseAccess(
 export async function executeTool(
   toolName: string,
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   try {
     switch (toolName) {
@@ -147,7 +147,7 @@ export async function executeTool(
  * TipTap expects:  { type: "paragraph", content: [{ type: "text", text: "Hello" }] }
  */
 function normalizeTipTapBlock(
-  block: Record<string, unknown>
+  block: Record<string, unknown>,
 ): Record<string, unknown> {
   const { type, text, content, attrs, ...rest } = block;
   const result: Record<string, unknown> = { type, ...rest };
@@ -159,7 +159,7 @@ function normalizeTipTapBlock(
   // If the block already has a content array, recurse into children
   if (Array.isArray(content)) {
     result.content = content.map((child) =>
-      normalizeTipTapBlock(child as Record<string, unknown>)
+      normalizeTipTapBlock(child as Record<string, unknown>),
     );
     return result;
   }
@@ -196,14 +196,14 @@ function buildTipTapContent(blocks: unknown[]): Record<string, unknown> {
     return blocks[0] as Record<string, unknown>;
   }
   const normalized = blocks.map((b) =>
-    normalizeTipTapBlock(b as Record<string, unknown>)
+    normalizeTipTapBlock(b as Record<string, unknown>),
   );
   return { type: "doc", content: normalized };
 }
 
 async function createPage(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const title = (input.title as string) || "Untitled";
   const parentId = (input.parentId as string) || null;
@@ -251,7 +251,7 @@ async function createPage(
 
 async function updatePage(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const pageId = input.pageId as string;
   if (!pageId) return { success: false, error: "pageId is required" };
@@ -276,7 +276,7 @@ async function updatePage(
 
 async function deletePage(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const pageId = input.pageId as string;
   if (!pageId) return { success: false, error: "pageId is required" };
@@ -294,7 +294,7 @@ async function deletePage(
 
 async function createDatabase(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const title = (input.title as string) || "Untitled Database";
   const titlePropId = uuidv4();
@@ -374,7 +374,7 @@ async function createDatabase(
 
 async function addDatabaseProperty(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const databaseId = input.databaseId as string;
   if (!databaseId) return { success: false, error: "databaseId is required" };
@@ -418,7 +418,7 @@ async function addDatabaseProperty(
 
 async function createDatabaseRow(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const databaseId = input.databaseId as string;
   if (!databaseId) return { success: false, error: "databaseId is required" };
@@ -481,7 +481,7 @@ async function createDatabaseRow(
       propDef.options
     ) {
       const option = propDef.options.find(
-        (o) => o.name.toLowerCase() === value.toLowerCase()
+        (o) => o.name.toLowerCase() === value.toLowerCase(),
       );
       resolvedProperties[propDef.id] = option ? option.id : value;
     } else if (
@@ -491,7 +491,7 @@ async function createDatabaseRow(
     ) {
       resolvedProperties[propDef.id] = value.map((v) => {
         const option = propDef.options!.find(
-          (o) => o.name.toLowerCase() === (v as string).toLowerCase()
+          (o) => o.name.toLowerCase() === (v as string).toLowerCase(),
         );
         return option ? option.id : v;
       });
@@ -561,7 +561,7 @@ function resolveRowProperties(
       type: string;
       options?: Array<{ id: string; name: string }>;
     }
-  >
+  >,
 ): Record<string, unknown> {
   const idToProperty = new Map<
     string,
@@ -623,7 +623,7 @@ function matchesFilter(
     contains?: string;
     greater_than?: number;
     less_than?: number;
-  }
+  },
 ): boolean {
   const value = resolvedProperties[filter.property];
 
@@ -642,7 +642,7 @@ function matchesFilter(
       return value.some(
         (v) =>
           typeof v === "string" &&
-          v.toLowerCase() === (filter.equals as string).toLowerCase()
+          v.toLowerCase() === (filter.equals as string).toLowerCase(),
       );
     }
     return value === filter.equals;
@@ -664,7 +664,7 @@ function matchesFilter(
 
 async function listDatabaseRows(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const databaseId = input.databaseId as string;
   if (!databaseId) return { success: false, error: "databaseId is required" };
@@ -706,7 +706,7 @@ async function listDatabaseRows(
 
   // Find the title property ID
   const titlePropId = Object.values(dbProps).find(
-    (p) => p.type === "title"
+    (p) => p.type === "title",
   )?.id;
   const titlePropName = titlePropId
     ? (dbProps[titlePropId]?.name ?? "Name")
@@ -768,7 +768,7 @@ async function listDatabaseRows(
 
 async function getDatabaseRow(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const rowId = input.rowId as string;
   if (!rowId) return { success: false, error: "rowId is required" };
@@ -781,7 +781,7 @@ async function getDatabaseRow(
   // Verify workspace access via the database
   const check = await verifyDatabaseAccess(
     rowData.databaseId as string,
-    context.workspaceId
+    context.workspaceId,
   );
   if (!check.ok) return check.error;
 
@@ -799,7 +799,7 @@ async function getDatabaseRow(
 
   // Inject authoritative title from page document
   const titlePropId = Object.values(dbProps).find(
-    (p) => p.type === "title"
+    (p) => p.type === "title",
   )?.id;
   if (titlePropId && rowData.pageId) {
     const pageDoc = await getDb()
@@ -825,7 +825,7 @@ async function getDatabaseRow(
 
 async function updateDatabaseRow(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const rowId = input.rowId as string;
   if (!rowId) return { success: false, error: "rowId is required" };
@@ -837,7 +837,7 @@ async function updateDatabaseRow(
 
   const check = await verifyDatabaseAccess(
     rowData.databaseId as string,
-    context.workspaceId
+    context.workspaceId,
   );
   if (!check.ok) return check.error;
 
@@ -894,7 +894,7 @@ async function updateDatabaseRow(
       propDef.options
     ) {
       const option = propDef.options.find(
-        (o) => o.name.toLowerCase() === value.toLowerCase()
+        (o) => o.name.toLowerCase() === value.toLowerCase(),
       );
       updatedProps[propDef.id] = option ? option.id : value;
       hasNonTitleChanges = true;
@@ -905,7 +905,7 @@ async function updateDatabaseRow(
     ) {
       updatedProps[propDef.id] = value.map((v) => {
         const option = propDef.options!.find(
-          (o) => o.name.toLowerCase() === (v as string).toLowerCase()
+          (o) => o.name.toLowerCase() === (v as string).toLowerCase(),
         );
         return option ? option.id : v;
       });
@@ -948,7 +948,7 @@ async function updateDatabaseRow(
 
 async function deleteDatabaseRow(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const rowId = input.rowId as string;
   if (!rowId) return { success: false, error: "rowId is required" };
@@ -960,7 +960,7 @@ async function deleteDatabaseRow(
 
   const check = await verifyDatabaseAccess(
     rowData.databaseId as string,
-    context.workspaceId
+    context.workspaceId,
   );
   if (!check.ok) return check.error;
 
@@ -983,7 +983,7 @@ async function deleteDatabaseRow(
 
 async function searchPages(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const query = ((input.query as string) || "").toLowerCase();
 
@@ -1038,7 +1038,7 @@ async function listPages(context: ToolContext): Promise<ToolResult> {
 
 async function getPageContent(
   input: Record<string, unknown>,
-  context: ToolContext
+  context: ToolContext,
 ): Promise<ToolResult> {
   const pageId = input.pageId as string;
   if (!pageId) return { success: false, error: "pageId is required" };

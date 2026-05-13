@@ -25,6 +25,7 @@ import type { RowBrandId, PropertyBrandId } from "@/types";
 import CellEditor from "../properties/CellEditor";
 import CellDisplay from "../properties/CellDisplay";
 import { FONT_WEIGHT_MEDIUM } from "@/theme/fontWeights";
+import { ON_CHIP_COLOR } from "@/theme/notionColors";
 
 interface ListViewProps {
   database: Database;
@@ -59,12 +60,18 @@ export default function ListView({
     .map((id) => database.properties[id])
     .filter(Boolean);
 
-  const handleToggle = useCallback((rowId: RowBrandId) => {
+  const handleToggle = useCallback((rowId: RowBrandId | undefined) => {
+    if (!rowId) return;
     setExpandedId((prev) => (prev === rowId ? null : rowId));
   }, []);
 
   const handleCellChange = useCallback(
-    (rowId: RowBrandId, propId: PropertyBrandId, value: PropertyValue) => {
+    (
+      rowId: RowBrandId | undefined,
+      propId: PropertyBrandId | undefined,
+      value: PropertyValue,
+    ) => {
+      if (!rowId || !propId) return;
       onUpdateRow(rowId, { [propId]: value } as Record<
         PropertyBrandId,
         PropertyValue
@@ -126,7 +133,7 @@ export default function ListView({
                         size="small"
                         sx={{
                           bgcolor: opt.color,
-                          color: "white",
+                          color: ON_CHIP_COLOR,
                           height: 20,
                           fontSize: "10px",
                           ml: 0.5,

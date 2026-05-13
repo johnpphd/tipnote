@@ -34,7 +34,7 @@ export async function storeClient(client: StoredClient): Promise<void> {
 }
 
 export async function getClient(
-  clientId: string
+  clientId: string,
 ): Promise<StoredClient | undefined> {
   const doc = await getDb().collection(CLIENTS_COLLECTION).doc(clientId).get();
   if (!doc.exists) return undefined;
@@ -80,7 +80,7 @@ export async function createAuthCode(params: AuthCodeParams): Promise<string> {
     codeChallenge: params.codeChallenge,
     scopes: params.scopes,
     expiresAt: admin.firestore.Timestamp.fromMillis(
-      Date.now() + AUTH_CODE_TTL_MS
+      Date.now() + AUTH_CODE_TTL_MS,
     ),
     used: false,
   };
@@ -93,7 +93,7 @@ export async function createAuthCode(params: AuthCodeParams): Promise<string> {
  * Consume an authorization code (single-use). Returns the code data or null.
  */
 export async function consumeAuthCode(
-  rawCode: string
+  rawCode: string,
 ): Promise<Omit<StoredAuthCode, "codeHash" | "used"> | null> {
   const codeHash = hashToken(rawCode);
   const ref = getDb().collection(AUTH_CODES_COLLECTION).doc(codeHash);
@@ -147,7 +147,7 @@ interface TokenPairParams {
  * Create an access/refresh token pair. Returns raw tokens (shown once).
  */
 export async function createTokenPair(
-  params: TokenPairParams
+  params: TokenPairParams,
 ): Promise<{ accessToken: string; refreshToken: string }> {
   const rawAccess = generateRandomToken(32);
   const rawRefresh = generateRandomToken(48);
@@ -164,7 +164,7 @@ export async function createTokenPair(
     workspaceId: params.workspaceId,
     scopes: params.scopes,
     expiresAt: admin.firestore.Timestamp.fromMillis(
-      Date.now() + ACCESS_TOKEN_TTL_MS
+      Date.now() + ACCESS_TOKEN_TTL_MS,
     ),
     isRevoked: false,
   } satisfies StoredToken);
@@ -177,7 +177,7 @@ export async function createTokenPair(
     workspaceId: params.workspaceId,
     scopes: params.scopes,
     expiresAt: admin.firestore.Timestamp.fromMillis(
-      Date.now() + REFRESH_TOKEN_TTL_MS
+      Date.now() + REFRESH_TOKEN_TTL_MS,
     ),
     isRevoked: false,
   } satisfies StoredToken);
@@ -191,7 +191,7 @@ export async function createTokenPair(
  * Look up a token by its raw value. Returns null if not found, expired, or revoked.
  */
 export async function getValidToken(
-  rawToken: string
+  rawToken: string,
 ): Promise<StoredToken | null> {
   const tokenHash = hashToken(rawToken);
   const doc = await getDb().collection(TOKENS_COLLECTION).doc(tokenHash).get();

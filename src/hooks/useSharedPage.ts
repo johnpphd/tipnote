@@ -19,8 +19,9 @@ interface SharedPageResult {
  */
 async function resolveShareRole(
   page: Page,
-  uid: UserBrandId,
+  uid: UserBrandId | undefined,
 ): Promise<ShareRole | null> {
+  if (!uid) return null;
   // Direct sharing check
   const directRole = page.sharedWith?.[uid]?.role ?? null;
   if (directRole) return directRole;

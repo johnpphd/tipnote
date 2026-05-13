@@ -67,7 +67,7 @@ function SharePage() {
   }, [user, lookup, page, navigate]);
 
   const handleViewChange = useCallback(
-    (viewId: ViewBrandId) => {
+    (viewId: ViewBrandId | undefined) => {
       void navigate({
         to: "/share/$shareToken",
         params: { shareToken },

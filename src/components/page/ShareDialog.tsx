@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -22,18 +22,11 @@ import {
   Public as PublicIcon,
   PersonRemove as RemoveIcon,
 } from "@mui/icons-material";
-import { useSnackbar } from "notistack";
 import { useAuth } from "@/hooks/useAuth";
 import { useWorkspace } from "@/hooks/useWorkspace";
 import { useUserProfiles } from "@/hooks/useUserProfiles";
-import {
-  publishPage,
-  unpublishPage,
-  sharePageWithUser,
-  updateShareRole,
-  removePageShare,
-} from "@/lib/database/sharing";
-import { findUserByEmail } from "@/lib/database/userProfiles";
+import { useShareDialogState } from "./_hooks/useShareDialogState";
+import { useShareActions } from "./_hooks/useShareActions";
 import type { Page, ShareRole } from "@/types";
 import { UserBrandId } from "@/types";
 import { FONT_WEIGHT_MEDIUM, FONT_WEIGHT_SEMIBOLD } from "@/theme/fontWeights";
@@ -48,13 +41,18 @@ interface ShareDialogProps {
 export default function ShareDialog({ open, onClose, page }: ShareDialogProps) {
   const { user } = useAuth();
   const { workspace } = useWorkspace();
-  const { enqueueSnackbar } = useSnackbar();
-  const [publishLoading, setPublishLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [email, setEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<ShareRole>("viewer");
-  const [inviteLoading, setInviteLoading] = useState(false);
-  const [inviteError, setInviteError] = useState("");
+  const state = useShareDialogState();
+  const {
+    publishLoading,
+    copied,
+    email,
+    inviteRole,
+    inviteLoading,
+    inviteError,
+    setEmail,
+    setInviteRole,
+    setInviteError,
+  } = state;
 
   const isPublished = page.isPublished ?? false;
   const shareToken = page.shareToken;
@@ -69,123 +67,28 @@ export default function ShareDialog({ open, onClose, page }: ShareDialogProps) {
     ? `${window.location.origin}/share/${shareToken}`
     : null;
 
-  const handleTogglePublish = useCallback(async () => {
-    if (!user) return;
-    setPublishLoading(true);
-    try {
-      if (isPublished && shareToken) {
-        await unpublishPage(page.id, shareToken);
-        enqueueSnackbar("Page unpublished", { variant: "info" });
-      } else {
-        await publishPage(page.id, UserBrandId.parse(user.uid));
-        enqueueSnackbar("Page published to web", { variant: "success" });
-      }
-    } catch {
-      enqueueSnackbar("Failed to update sharing settings", {
-        variant: "error",
-      });
-    } finally {
-      setPublishLoading(false);
-    }
-  }, [user, isPublished, shareToken, page.id, enqueueSnackbar]);
-
-  const handleCopy = useCallback(async () => {
-    if (!shareUrl) return;
-    await navigator.clipboard.writeText(shareUrl);
-    setCopied(true);
-    enqueueSnackbar("Link copied to clipboard", { variant: "success" });
-    setTimeout(() => setCopied(false), 2000);
-  }, [shareUrl, enqueueSnackbar]);
-
-  const handleInvite = useCallback(async () => {
-    if (!user || !email.trim()) return;
-    setInviteError("");
-    setInviteLoading(true);
-
-    try {
-      const trimmedEmail = email.trim().toLowerCase();
-
-      // Validate not self
-      if (trimmedEmail === user.email?.toLowerCase()) {
-        setInviteError("You can't share with yourself");
-        setInviteLoading(false);
-        return;
-      }
-
-      // Find user by email
-      const targetUser = await findUserByEmail(trimmedEmail);
-      if (!targetUser) {
-        setInviteError("No user found with that email");
-        setInviteLoading(false);
-        return;
-      }
-
-      // Check if already a workspace member
-      const memberIds = workspace?.memberIds ?? [];
-      if (memberIds.includes(targetUser.uid)) {
-        setInviteError("Already a workspace member");
-        setInviteLoading(false);
-        return;
-      }
-
-      // Check if already shared
-      if (sharedWith[targetUser.uid]) {
-        setInviteError("Already shared with this user");
-        setInviteLoading(false);
-        return;
-      }
-
-      await sharePageWithUser(
-        page.id,
-        targetUser.uid,
-        inviteRole,
-        UserBrandId.parse(user.uid),
-      );
-
-      setEmail("");
-      enqueueSnackbar(
-        `Shared with ${targetUser.displayName || targetUser.email}`,
-        {
-          variant: "success",
-        },
-      );
-    } catch {
-      enqueueSnackbar("Failed to share page", { variant: "error" });
-    } finally {
-      setInviteLoading(false);
-    }
-  }, [
+  const {
+    handleTogglePublish,
+    handleCopy,
+    handleInvite,
+    handleRoleChange,
+    handleRemoveShare,
+  } = useShareActions({
     user,
-    email,
     workspace,
+    page,
+    isPublished,
+    shareToken,
+    shareUrl,
     sharedWith,
-    page.id,
+    email,
     inviteRole,
-    enqueueSnackbar,
-  ]);
-
-  const handleRoleChange = useCallback(
-    async (targetUid: UserBrandId, newRole: ShareRole) => {
-      try {
-        await updateShareRole(page.id, targetUid, newRole);
-      } catch {
-        enqueueSnackbar("Failed to update role", { variant: "error" });
-      }
-    },
-    [page.id, enqueueSnackbar],
-  );
-
-  const handleRemoveShare = useCallback(
-    async (targetUid: UserBrandId) => {
-      try {
-        await removePageShare(page.id, targetUid);
-        enqueueSnackbar("Access removed", { variant: "info" });
-      } catch {
-        enqueueSnackbar("Failed to remove access", { variant: "error" });
-      }
-    },
-    [page.id, enqueueSnackbar],
-  );
+    setPublishLoading: state.setPublishLoading,
+    setCopied: state.setCopied,
+    setEmail: state.setEmail,
+    setInviteLoading: state.setInviteLoading,
+    setInviteError: state.setInviteError,
+  });
 
   return (
     <Dialog

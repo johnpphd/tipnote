@@ -8,6 +8,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import type { PropertyDefinition, PropertyValue, NumberFormat } from "@/types";
+import { ON_CHIP_COLOR } from "@/theme/notionColors";
 
 interface CellEditorProps {
   property: PropertyDefinition;
@@ -199,7 +200,7 @@ function SelectCellEditor({
             size="small"
             sx={{
               bgcolor: opt.color,
-              color: "white",
+              color: ON_CHIP_COLOR,
               height: 20,
               fontSize: "11px",
             }}

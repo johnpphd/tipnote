@@ -5,14 +5,10 @@ import {
   Image as ImageIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
-import { useSnackbar } from "notistack";
-import { updatePage } from "@/lib/database/pages";
-import { updateDatabaseRow } from "@/lib/database/databases";
-import { uploadImage } from "@/lib/firebase";
 import type { Page } from "@/types";
-import { Title, IconEmoji, ImageUrl } from "@/types";
 import { useDatabaseRowByPageId } from "@/hooks/useDatabaseRowByPageId";
 import { useDatabase } from "@/hooks/useDatabase";
+import { usePageHeaderActions } from "./_hooks/usePageHeaderActions";
 import EmojiPicker from "./EmojiPicker";
 import { FONT_WEIGHT_BOLD } from "@/theme/fontWeights";
 
@@ -75,18 +71,17 @@ function TitleInput({
         },
         "& .MuiInputBase-root": {
           background: "transparent",
-          border: "none",
+          border: 0,
           boxShadow: "none",
           "&:hover": { background: "transparent" },
         },
-        "& fieldset": { border: "none" },
+        "& fieldset": { border: 0 },
       }}
     />
   );
 }
 
 export default function PageHeader({ page, isReadOnly }: PageHeaderProps) {
-  const { enqueueSnackbar } = useSnackbar();
   const [emojiAnchor, setEmojiAnchor] = useState<HTMLElement | null>(null);
   const [showDescription, setShowDescription] = useState(!!page.description);
   const [description, setDescription] = useState(page.description || "");
@@ -105,49 +100,13 @@ export default function PageHeader({ page, isReadOnly }: PageHeaderProps) {
     ? Object.values(database.properties).find((p) => p.type === "title")?.id
     : undefined;
 
-  const handleSave = useCallback(
-    (title: string) => {
-      const trimmed = title.trim();
-      if (trimmed !== page.title) {
-        const newTitle = Title.parse(trimmed || "Untitled");
-        void updatePage(page.id, { title: newTitle });
-
-        if (dbRow && titlePropId) {
-          void updateDatabaseRow(dbRow.id, { [titlePropId]: newTitle });
-        }
-      }
-    },
-    [page.title, page.id, dbRow, titlePropId],
-  );
-
-  const handleEmojiSelect = useCallback(
-    (emoji: string) => {
-      void updatePage(page.id, { icon: IconEmoji.parse(emoji) });
-    },
-    [page.id],
-  );
-
-  const handleCoverUpload = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      try {
-        const url = await uploadImage(page.workspaceId, page.id, file);
-        await updatePage(page.id, { coverImage: ImageUrl.parse(url) });
-      } catch {
-        enqueueSnackbar("Failed to upload cover image", { variant: "error" });
-      }
-    },
-    [page.workspaceId, page.id, enqueueSnackbar],
-  );
-
-  const handleRemoveCover = useCallback(() => {
-    void updatePage(page.id, { coverImage: ImageUrl.parse("") });
-  }, [page.id]);
-
-  const handleDescriptionBlur = useCallback(() => {
-    void updatePage(page.id, { description: Title.parse(description) });
-  }, [page.id, description]);
+  const {
+    handleSave,
+    handleEmojiSelect,
+    handleCoverUpload,
+    handleRemoveCover,
+    handleDescriptionBlur,
+  } = usePageHeaderActions({ page, dbRow, titlePropId, description });
 
   return (
     <Box sx={{ mb: 2, overflow: "hidden" }}>
@@ -323,11 +282,11 @@ export default function PageHeader({ page, isReadOnly }: PageHeaderProps) {
               },
               "& .MuiInputBase-root": {
                 background: "transparent",
-                border: "none",
+                border: 0,
                 boxShadow: "none",
                 "&:hover": { background: "transparent" },
               },
-              "& fieldset": { border: "none" },
+              "& fieldset": { border: 0 },
             }}
           />
         ))}

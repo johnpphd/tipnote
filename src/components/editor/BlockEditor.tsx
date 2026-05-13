@@ -30,6 +30,8 @@ import type { WorkspaceBrandId, PageBrandId } from "@/types";
 
 const lowlight = createLowlight(common);
 
+const TABLE_SELECTED_CELL_BG = "rgba(100,150,255,0.15)";
+
 // Slash command extension using the Suggestion plugin
 const SlashCommands = Extension.create({
   name: "slashCommands",
@@ -201,7 +203,7 @@ export default function BlockEditor({
     <Box
       sx={{
         "& .tiptap": {
-          outline: "none",
+          outline: 0,
           minHeight: 200,
           "& p.is-editor-empty:first-child::before": {
             content: "attr(data-placeholder)",
@@ -241,7 +243,7 @@ export default function BlockEditor({
             fontStyle: "italic",
           },
           "& hr": {
-            border: "none",
+            border: 0,
             borderTop: 1,
             borderColor: "divider",
             my: 2,
@@ -300,7 +302,7 @@ export default function BlockEditor({
               textAlign: "left",
             },
             "& .selectedCell": {
-              bgcolor: "rgba(100,150,255,0.15)",
+              bgcolor: TABLE_SELECTED_CELL_BG,
             },
             "& .column-resize-handle": {
               position: "absolute",

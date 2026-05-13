@@ -40,7 +40,7 @@ function PageView() {
   const navigate = useNavigate();
 
   const handleViewChange = useCallback(
-    (viewId: ViewBrandId) => {
+    (viewId: ViewBrandId | undefined) => {
       void navigate({
         to: "/w/$pageId",
         params: { pageId: rawPageId },

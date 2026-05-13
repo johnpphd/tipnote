@@ -8,6 +8,8 @@ import type { PropertyBrandId } from "@/types";
 import CellDisplay from "../properties/CellDisplay";
 import { FONT_WEIGHT_SEMIBOLD } from "@/theme/fontWeights";
 
+const CARD_SHADOW = "0 2px 8px rgba(0, 0, 0, 0.08)";
+
 interface BoardCardProps {
   row: DatabaseRow;
   titlePropId: PropertyBrandId | undefined;
@@ -84,7 +86,7 @@ function BoardCard({
         bgcolor: "background.paper",
         border: "1px solid",
         borderColor: "divider",
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+        boxShadow: CARD_SHADOW,
         overflow: "hidden",
       }}
     >

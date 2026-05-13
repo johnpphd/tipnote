@@ -40,7 +40,8 @@ function SearchDialogInner({ onClose }: SearchDialogInnerProps) {
   }, [pages, query]);
 
   const handleSelect = useCallback(
-    (pageId: PageBrandId) => {
+    (pageId: PageBrandId | undefined) => {
+      if (!pageId) return;
       void navigate({ to: "/w/$pageId", params: { pageId } });
       onClose();
     },

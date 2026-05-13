@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useMemo, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -20,13 +20,12 @@ import {
   format,
   isSameMonth,
   isSameDay,
-  addMonths,
-  subMonths,
-  addWeeks,
-  subWeeks,
   addDays,
-  subDays,
 } from "date-fns";
+import {
+  useCalendarNavigation,
+  type CalendarMode,
+} from "./_hooks/useCalendarNavigation";
 import type {
   Database,
   DatabaseRow,
@@ -41,8 +40,6 @@ import {
   FONT_WEIGHT_BOLD,
 } from "@/theme/fontWeights";
 import { buildOptionColorMap, getRowColorHex } from "../colorUtils";
-
-type CalendarMode = "month" | "week" | "4day";
 
 interface CalendarViewProps {
   database: Database;
@@ -104,19 +101,6 @@ function getHeaderLabel(anchor: Date, mode: CalendarMode): string {
   return `${format(anchor, "MMM d")} \u2013 ${format(end, "MMM d, yyyy")}`;
 }
 
-function parseCalMode(s?: string): CalendarMode {
-  if (s === "week" || s === "4day") return s;
-  return "month";
-}
-
-function parseCalDate(s?: string): Date {
-  if (s) {
-    const d = new Date(s);
-    if (!isNaN(d.getTime())) return d;
-  }
-  return new Date();
-}
-
 export default function CalendarView({
   database,
   rows,
@@ -126,15 +110,14 @@ export default function CalendarView({
   initialDate,
   onStateChange,
 }: CalendarViewProps) {
-  const [anchor, setAnchor] = useState(() => parseCalDate(initialDate));
-  const [mode, setMode] = useState<CalendarMode>(() =>
-    parseCalMode(initialMode),
-  );
-
-  // Sync calendar state to URL search params
-  useEffect(() => {
-    onStateChange?.(mode, format(anchor, "yyyy-MM-dd"));
-  }, [mode, anchor, onStateChange]);
+  const {
+    anchor,
+    mode,
+    handlePrev,
+    handleNext,
+    handleToday,
+    handleModeChange,
+  } = useCalendarNavigation({ initialMode, initialDate, onStateChange });
 
   // Find the date property to place events
   const datePropId = useMemo(() => {
@@ -215,31 +198,6 @@ export default function CalendarView({
     }
     return map;
   }, [rows, datePropId]);
-
-  const handlePrev = useCallback(() => {
-    setAnchor((a) => {
-      if (mode === "month") return subMonths(a, 1);
-      if (mode === "week") return subWeeks(a, 1);
-      return subDays(a, 1);
-    });
-  }, [mode]);
-
-  const handleNext = useCallback(() => {
-    setAnchor((a) => {
-      if (mode === "month") return addMonths(a, 1);
-      if (mode === "week") return addWeeks(a, 1);
-      return addDays(a, 1);
-    });
-  }, [mode]);
-
-  const handleToday = useCallback(() => setAnchor(new Date()), []);
-
-  const handleModeChange = useCallback(
-    (_: React.MouseEvent<HTMLElement>, newMode: CalendarMode | null) => {
-      if (newMode) setMode(newMode);
-    },
-    [],
-  );
 
   const maxEventsPerCell = mode === "month" ? 3 : 15;
   const minCellHeight =

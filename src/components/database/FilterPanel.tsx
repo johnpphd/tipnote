@@ -28,8 +28,12 @@ import {
 } from "@mui/icons-material";
 import { defaultOperatorForType } from "@/lib/database/filterEngine";
 import FilterRow from "./FilterRow";
-import type { Database, ViewFilter, PropertyType } from "@/types";
-import { type PropertyBrandId } from "@/types";
+import type {
+  Database,
+  ViewFilter,
+  PropertyType,
+  PropertyBrandId,
+} from "@/types";
 import { FONT_WEIGHT_SEMIBOLD } from "@/theme/fontWeights";
 
 const PROPERTY_TYPE_ICONS: Record<PropertyType, React.ReactElement> = {
@@ -72,7 +76,8 @@ export default function FilterPanel({
     onFiltersChange(filters.filter((_, i) => i !== index));
   };
 
-  const handleAddFilter = (propertyId: PropertyBrandId) => {
+  const handleAddFilter = (propertyId: PropertyBrandId | undefined) => {
+    if (!propertyId) return;
     const propDef = database.properties[propertyId];
     const propType: PropertyType = propDef?.type ?? "text";
     const newFilter: ViewFilter = {

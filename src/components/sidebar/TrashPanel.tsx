@@ -45,7 +45,8 @@ export default function TrashPanel({
   const [loadingId, setLoadingId] = useState<PageBrandId | null>(null);
 
   const handleRestore = useCallback(
-    async (e: React.MouseEvent, pageId: PageBrandId) => {
+    async (e: React.MouseEvent, pageId: PageBrandId | undefined) => {
+      if (!pageId) return;
       e.stopPropagation();
       setLoadingId(pageId);
       try {
@@ -58,7 +59,8 @@ export default function TrashPanel({
   );
 
   const handlePermanentDelete = useCallback(
-    async (e: React.MouseEvent, pageId: PageBrandId) => {
+    async (e: React.MouseEvent, pageId: PageBrandId | undefined) => {
+      if (!pageId) return;
       e.stopPropagation();
       setLoadingId(pageId);
       try {

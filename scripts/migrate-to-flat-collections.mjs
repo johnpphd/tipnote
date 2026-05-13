@@ -34,10 +34,10 @@ async function migrateCollection(
   workspaceId,
   subcollectionName,
   flatCollectionName,
-  extraFields = {}
+  extraFields = {},
 ) {
   const subcollectionRef = db.collection(
-    `workspaces/${workspaceId}/${subcollectionName}`
+    `workspaces/${workspaceId}/${subcollectionName}`,
   );
   const snapshot = await subcollectionRef.get();
 
@@ -83,7 +83,7 @@ async function migrateCollection(
   }
 
   console.log(
-    `  ${subcollectionName}: ${totalMigrated} migrated, ${totalSkipped} skipped (already exist)`
+    `  ${subcollectionName}: ${totalMigrated} migrated, ${totalSkipped} skipped (already exist)`,
   );
   return totalMigrated;
 }
@@ -109,7 +109,7 @@ async function main() {
       "pages",
       (data) => ({
         ownerId: data.createdBy || null,
-      })
+      }),
     );
 
     // Databases: just add workspaceId
@@ -117,7 +117,7 @@ async function main() {
       workspaceId,
       "databases",
       "databases",
-      () => ({})
+      () => ({}),
     );
 
     // Database Rows: just add workspaceId
@@ -125,7 +125,7 @@ async function main() {
       workspaceId,
       "dbRows",
       "dbRows",
-      () => ({})
+      () => ({}),
     );
 
     // Database Views: just add workspaceId
@@ -133,7 +133,7 @@ async function main() {
       workspaceId,
       "dbViews",
       "dbViews",
-      () => ({})
+      () => ({}),
     );
 
     console.log("");

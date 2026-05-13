@@ -9,9 +9,10 @@ import type { PageBrandId } from "@/types";
  * Can be migrated to per-block documents later for real-time collab.
  */
 export async function savePageContent(
-  pageId: PageBrandId,
+  pageId: PageBrandId | undefined,
   content: JSONContent,
 ): Promise<void> {
+  if (!pageId) return;
   await updateDoc(pageRef(pageId), {
     content,
     updatedAt: serverTimestamp(),

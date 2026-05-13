@@ -9,13 +9,8 @@ import {
   arrayRemove,
   deleteField,
 } from "@/lib/firebase";
-import type { ShareRole } from "@/types";
-import {
-  ShareToken,
-  PageBrandId,
-  type UserBrandId,
-  type WorkspaceBrandId,
-} from "@/types";
+import type { ShareRole, UserBrandId, WorkspaceBrandId } from "@/types";
+import { ShareToken, PageBrandId } from "@/types";
 
 function generateShareToken(): string {
   const chars =
@@ -28,9 +23,12 @@ function generateShareToken(): string {
 }
 
 export async function publishPage(
-  pageId: PageBrandId,
-  userId: UserBrandId,
+  pageId: PageBrandId | undefined,
+  userId: UserBrandId | undefined,
 ): Promise<ShareToken> {
+  if (!pageId || !userId) {
+    throw new Error("publishPage: pageId and userId are required");
+  }
   const token = generateShareToken();
 
   const brandedToken = ShareToken.parse(token);
@@ -53,9 +51,10 @@ export async function publishPage(
 }
 
 export async function unpublishPage(
-  pageId: PageBrandId,
+  pageId: PageBrandId | undefined,
   shareToken: ShareToken,
 ): Promise<void> {
+  if (!pageId) return;
   // Clear publish fields on the page document
   await updateDoc(pageRef(pageId), {
     isPublished: false,
@@ -81,11 +80,12 @@ export async function lookupShareToken(
 }
 
 export async function sharePageWithUser(
-  pageId: PageBrandId,
-  targetUid: UserBrandId,
+  pageId: PageBrandId | undefined,
+  targetUid: UserBrandId | undefined,
   role: ShareRole,
-  addedBy: UserBrandId,
+  addedBy: UserBrandId | undefined,
 ): Promise<void> {
+  if (!pageId || !targetUid || !addedBy) return;
   await updateDoc(pageRef(pageId), {
     [`sharedWith.${targetUid}`]: {
       role,
@@ -97,19 +97,21 @@ export async function sharePageWithUser(
 }
 
 export async function updateShareRole(
-  pageId: PageBrandId,
-  targetUid: UserBrandId,
+  pageId: PageBrandId | undefined,
+  targetUid: UserBrandId | undefined,
   newRole: ShareRole,
 ): Promise<void> {
+  if (!pageId || !targetUid) return;
   await updateDoc(pageRef(pageId), {
     [`sharedWith.${targetUid}.role`]: newRole,
   });
 }
 
 export async function removePageShare(
-  pageId: PageBrandId,
-  targetUid: UserBrandId,
+  pageId: PageBrandId | undefined,
+  targetUid: UserBrandId | undefined,
 ): Promise<void> {
+  if (!pageId || !targetUid) return;
   await updateDoc(pageRef(pageId), {
     [`sharedWith.${targetUid}`]: deleteField(),
     sharedWithIds: arrayRemove(targetUid),
@@ -117,10 +119,11 @@ export async function removePageShare(
 }
 
 export async function transferPageOwnership(
-  pageId: PageBrandId,
-  newOwnerId: UserBrandId,
-  newWorkspaceId: WorkspaceBrandId,
+  pageId: PageBrandId | undefined,
+  newOwnerId: UserBrandId | undefined,
+  newWorkspaceId: WorkspaceBrandId | undefined,
 ): Promise<void> {
+  if (!pageId || !newOwnerId || !newWorkspaceId) return;
   await updateDoc(pageRef(pageId), {
     ownerId: newOwnerId,
     workspaceId: newWorkspaceId,

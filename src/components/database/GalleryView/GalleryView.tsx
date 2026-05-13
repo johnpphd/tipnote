@@ -10,6 +10,7 @@ import type {
 import type { RowBrandId, PropertyBrandId } from "@/types";
 import CellDisplay from "../properties/CellDisplay";
 import { FONT_WEIGHT_SEMIBOLD } from "@/theme/fontWeights";
+import { ON_CHIP_COLOR } from "@/theme/notionColors";
 
 interface GalleryViewProps {
   database: Database;
@@ -134,7 +135,7 @@ export default function GalleryView({
                           size="small"
                           sx={{
                             bgcolor: opt.color,
-                            color: "white",
+                            color: ON_CHIP_COLOR,
                             height: 20,
                             fontSize: "10px",
                             mr: 0.25,

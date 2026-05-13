@@ -1,0 +1,17 @@
+export const symbols2: Record<string, string> = {
+  "✅": "check mark done yes",
+  "❌": "cross mark no wrong",
+  "❓": "question",
+  "❗": "exclamation important",
+  "⚠️": "warning caution",
+  "🚫": "prohibited forbidden",
+  "🔴": "red circle",
+  "🟠": "orange circle",
+  "🟡": "yellow circle",
+  "🟢": "green circle",
+  "🔵": "blue circle",
+  "🟣": "purple circle",
+  "🟤": "brown circle",
+  "⚫": "black circle",
+  "⚪": "white circle",
+};

@@ -30,7 +30,7 @@ const ACCESS_TOKEN_EXPIRES_IN = 3600; // 1 hour, in seconds
  */
 class FirestoreClientsStore implements OAuthRegisteredClientsStore {
   async getClient(
-    clientId: string
+    clientId: string,
   ): Promise<OAuthClientInformationFull | undefined> {
     const stored = await getClient(clientId);
     if (!stored) return undefined;
@@ -52,7 +52,7 @@ class FirestoreClientsStore implements OAuthRegisteredClientsStore {
     client: Omit<
       OAuthClientInformationFull,
       "client_id" | "client_id_issued_at"
-    >
+    >,
   ): Promise<OAuthClientInformationFull> {
     const clientId = uuidv4();
     const clientSecret = generateRandomToken(48);
@@ -94,7 +94,7 @@ export class NotionCloneOAuthProvider implements OAuthServerProvider {
   async authorize(
     client: OAuthClientInformationFull,
     params: AuthorizationParams,
-    res: Response
+    res: Response,
   ): Promise<void> {
     const html = renderAuthorizePage({
       clientName: client.client_name || "Unknown Client",
@@ -116,7 +116,7 @@ export class NotionCloneOAuthProvider implements OAuthServerProvider {
    */
   async challengeForAuthorizationCode(
     _client: OAuthClientInformationFull,
-    authorizationCode: string
+    authorizationCode: string,
   ): Promise<string> {
     const codeData = await consumeAuthCode(authorizationCode);
     if (!codeData) {
@@ -141,7 +141,7 @@ export class NotionCloneOAuthProvider implements OAuthServerProvider {
    */
   async exchangeAuthorizationCode(
     _client: OAuthClientInformationFull,
-    authorizationCode: string
+    authorizationCode: string,
   ): Promise<OAuthTokens> {
     const codeHash = hashToken(authorizationCode);
     const codeData = pendingExchanges.get(codeHash);
@@ -171,7 +171,7 @@ export class NotionCloneOAuthProvider implements OAuthServerProvider {
    */
   async exchangeRefreshToken(
     _client: OAuthClientInformationFull,
-    refreshToken: string
+    refreshToken: string,
   ): Promise<OAuthTokens> {
     const tokenData = await getValidToken(refreshToken);
     if (!tokenData || tokenData.tokenType !== "refresh") {
@@ -222,7 +222,7 @@ export class NotionCloneOAuthProvider implements OAuthServerProvider {
    */
   async revokeToken(
     _client: OAuthClientInformationFull,
-    request: OAuthTokenRevocationRequest
+    request: OAuthTokenRevocationRequest,
   ): Promise<void> {
     await revokeToken(request.token);
   }

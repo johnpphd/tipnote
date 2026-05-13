@@ -3,7 +3,7 @@ import { Chip, Box, Checkbox, Link, Typography } from "@mui/material";
 import { Description as PageIcon } from "@mui/icons-material";
 import type { PropertyDefinition, PropertyValue } from "@/types";
 import type { Timestamp } from "firebase/firestore";
-import { resolveColor } from "@/theme/notionColors";
+import { resolveColor, ON_CHIP_COLOR } from "@/theme/notionColors";
 import { FONT_WEIGHT_MEDIUM } from "@/theme/fontWeights";
 
 interface CellDisplayProps {
@@ -122,7 +122,7 @@ function CellDisplay({ property, value, maxLines = 1 }: CellDisplayProps) {
           size="small"
           sx={{
             bgcolor: resolveColor(opt.color),
-            color: "white",
+            color: ON_CHIP_COLOR,
             height: 22,
             fontSize: "12px",
             fontWeight: FONT_WEIGHT_MEDIUM,
@@ -152,7 +152,7 @@ function CellDisplay({ property, value, maxLines = 1 }: CellDisplayProps) {
                 size="small"
                 sx={{
                   bgcolor: resolveColor(opt.color),
-                  color: "white",
+                  color: ON_CHIP_COLOR,
                   height: 20,
                   fontSize: "11px",
                   fontWeight: FONT_WEIGHT_MEDIUM,

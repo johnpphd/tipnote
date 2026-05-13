@@ -30,7 +30,7 @@ import {
 } from "@mui/icons-material";
 import type { Database, DatabaseRow, DatabaseView } from "@/types";
 import type { PropertyBrandId, RowBrandId, PageBrandId } from "@/types";
-import { NOTION_COLORS } from "@/theme/notionColors";
+import { NOTION_COLORS, ON_CHIP_COLOR } from "@/theme/notionColors";
 import BoardCard from "./BoardCard";
 import { FONT_WEIGHT_SEMIBOLD } from "@/theme/fontWeights";
 
@@ -192,7 +192,7 @@ export default function BoardColumn({
               "& .MuiInputBase-input": {
                 fontSize: "12px",
                 fontWeight: FONT_WEIGHT_SEMIBOLD,
-                color: "white",
+                color: ON_CHIP_COLOR,
                 py: 0,
               },
               "& .MuiInput-underline:before": {
@@ -214,7 +214,7 @@ export default function BoardColumn({
             }
             sx={{
               bgcolor: color,
-              color: "white",
+              color: ON_CHIP_COLOR,
               fontWeight: FONT_WEIGHT_SEMIBOLD,
               fontSize: "12px",
               height: 24,
@@ -410,7 +410,9 @@ export default function BoardColumn({
                         }}
                       >
                         {isSelected && (
-                          <CheckIcon sx={{ fontSize: 14, color: "white" }} />
+                          <CheckIcon
+                            sx={{ fontSize: 14, color: ON_CHIP_COLOR }}
+                          />
                         )}
                       </Box>
                     );

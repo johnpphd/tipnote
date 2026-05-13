@@ -60,7 +60,7 @@ When the user asks to create a page with details, use these blocks to populate t
 - If the user asks "what can you do?", summarize your capabilities in terms of the app — don't describe yourself as an AI.`;
 
 export async function buildSystemPrompt(
-  context: ChatContext
+  context: ChatContext,
 ): Promise<Anthropic.TextBlockParam[]> {
   const db = admin.firestore();
   const dynamicParts: string[] = [];
@@ -105,7 +105,7 @@ export async function buildSystemPrompt(
   if (context.currentPageId) {
     const pageTitle = context.currentPageTitle || "Unknown";
     dynamicParts.push(
-      `\n## Current Page\nThe user is currently viewing: "${pageTitle}" (id: ${context.currentPageId})`
+      `\n## Current Page\nThe user is currently viewing: "${pageTitle}" (id: ${context.currentPageId})`,
     );
   }
 
@@ -171,7 +171,7 @@ export async function buildSystemPrompt(
  * Used by CopilotKit runtime where the prompt is passed as a plain string.
  */
 export async function buildSystemPromptText(
-  workspaceId: string
+  workspaceId: string,
 ): Promise<string> {
   const blocks = await buildSystemPrompt({ workspaceId });
   return blocks.map((block) => block.text).join("\n");

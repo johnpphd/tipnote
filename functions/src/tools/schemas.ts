@@ -16,7 +16,7 @@ export const createPageSchema = z.object({
   content: z
     .array(z.record(z.string(), z.unknown()))
     .describe(
-      'Body content as an array of blocks. Each block is an object with "type" and "text". Supported types: "paragraph", "heading" (use attrs.level 1-3), "bulletList", "orderedList", "taskList", "codeBlock", "blockquote". For lists, nest items inside a "content" array with listItem nodes containing paragraph nodes.'
+      'Body content as an array of blocks. Each block is an object with "type" and "text". Supported types: "paragraph", "heading" (use attrs.level 1-3), "bulletList", "orderedList", "taskList", "codeBlock", "blockquote". For lists, nest items inside a "content" array with listItem nodes containing paragraph nodes.',
     )
     .optional(),
 });
@@ -36,7 +36,7 @@ export const updatePageSchema = z.object({
   content: z
     .array(z.record(z.string(), z.unknown()))
     .describe(
-      'Replace body content. Same format as create_page content: array of block objects with "type" and "text".'
+      'Replace body content. Same format as create_page content: array of block objects with "type" and "text".',
     )
     .optional(),
 });
@@ -81,10 +81,10 @@ export const addDatabasePropertySchema = z.object({
       z.object({
         name: z.string(),
         color: z.string(),
-      })
+      }),
     )
     .describe(
-      "Options for select/multiSelect properties. Colors: default, gray, brown, orange, yellow, green, blue, purple, pink, red"
+      "Options for select/multiSelect properties. Colors: default, gray, brown, orange, yellow, green, blue, purple, pink, red",
     )
     .optional(),
 });
@@ -100,7 +100,7 @@ export const createDatabaseRowSchema = z.object({
   properties: z
     .record(z.string(), z.unknown())
     .describe(
-      "Property values keyed by property name. Values depend on type: string for text/title/url, number for number, boolean for checkbox, string for select (option name), string[] for multiSelect (option names), string for date (YYYY-MM-DD)."
+      "Property values keyed by property name. Values depend on type: string for text/title/url, number for number, boolean for checkbox, string for select (option name), string[] for multiSelect (option names), string for date (YYYY-MM-DD).",
     )
     .optional(),
 });
@@ -113,18 +113,18 @@ export const listDatabaseRowsFilterSchema = z.object({
   property: z
     .string()
     .describe(
-      "The property name to filter on (e.g., 'Title', 'Genre', 'Rating')"
+      "The property name to filter on (e.g., 'Title', 'Genre', 'Rating')",
     ),
   equals: z
     .unknown()
     .describe(
-      "Exact match. String comparison is case-insensitive. For select, matches the option name. For checkbox, use true/false."
+      "Exact match. String comparison is case-insensitive. For select, matches the option name. For checkbox, use true/false.",
     )
     .optional(),
   contains: z
     .string()
     .describe(
-      "Substring match (case-insensitive). Works for text, title, and url properties."
+      "Substring match (case-insensitive). Works for text, title, and url properties.",
     )
     .optional(),
   greater_than: z
@@ -145,7 +145,7 @@ export const listDatabaseRowsSchema = z.object({
     .optional(),
   filter: listDatabaseRowsFilterSchema
     .describe(
-      'Filter rows by a property value. Provide "property" (the property name, e.g. "Title", "Genre") and exactly one condition: "equals" for exact match (all types, case-insensitive for text), "contains" for substring match (text/title/url), "greater_than" or "less_than" for numeric comparisons. For select/multiSelect, "equals" matches the option name. Example: {"property": "Title", "contains": "Idea"} or {"property": "Rating", "greater_than": 7}.'
+      'Filter rows by a property value. Provide "property" (the property name, e.g. "Title", "Genre") and exactly one condition: "equals" for exact match (all types, case-insensitive for text), "contains" for substring match (text/title/url), "greater_than" or "less_than" for numeric comparisons. For select/multiSelect, "equals" matches the option name. Example: {"property": "Title", "contains": "Idea"} or {"property": "Rating", "greater_than": 7}.',
     )
     .optional(),
 });
@@ -167,7 +167,7 @@ export const updateDatabaseRowSchema = z.object({
   properties: z
     .record(z.string(), z.unknown())
     .describe(
-      "Property values keyed by property name. Same format as create_database_row properties."
+      "Property values keyed by property name. Same format as create_database_row properties.",
     ),
 });
 
@@ -217,12 +217,12 @@ export const webSearchSchema = z.object({
   query: z
     .string()
     .describe(
-      "The search query. Be specific — e.g. 'Oppenheimer rotten tomatoes rating' rather than just 'Oppenheimer'."
+      "The search query. Be specific — e.g. 'Oppenheimer rotten tomatoes rating' rather than just 'Oppenheimer'.",
     ),
   count: z
     .number()
     .describe(
-      "Number of results to return (1-10). Default 5. Use fewer for simple fact lookups, more for research."
+      "Number of results to return (1-10). Default 5. Use fewer for simple fact lookups, more for research.",
     )
     .optional(),
 });

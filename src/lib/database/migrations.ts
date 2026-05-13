@@ -19,7 +19,8 @@ function markMigrated(name: string) {
   localStorage.setItem(MIGRATION_KEY, JSON.stringify([...migrated]));
 }
 
-export async function runMigrations(workspaceId: WorkspaceBrandId) {
+export async function runMigrations(workspaceId: WorkspaceBrandId | undefined) {
+  if (!workspaceId) return;
   const migrated = getMigrated();
 
   // Migration: Update "Table View" -> "Default view" and show ALL columns
