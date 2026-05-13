@@ -48,19 +48,19 @@ directories:
   scripts/: Migration and seed scripts
 
 key-files:
-  - src/main.tsx                    # App entry
-  - src/App.tsx                     # Root App component
-  - src/routes/__root.tsx           # Root layout
-  - src/theme/notionTheme.ts        # MUI theme (base)
+  - src/main.tsx # App entry
+  - src/App.tsx # Root App component
+  - src/routes/__root.tsx # Root layout
+  - src/theme/notionTheme.ts # MUI theme (base)
   - src/theme/createTipnoteTheme.ts # MUI theme (builder)
-  - src/theme/palette.ts            # Theme palette
-  - src/lib/firebase/config.ts      # Firebase config
-  - src/types/index.ts              # Domain type exports
-  - src/types/brand.ts              # Branded types (Zod 4 .brand())
-  - src/types/parsers.ts            # Zod parsers for branded types
-  - functions/src/index.ts          # Cloud Functions entry
-  - functions/src/copilotkit.ts     # CopilotKit runtime server
-  - firebase.json                   # Firebase project config
-  - firestore.rules                 # Firestore security rules
-  - vite.config.ts                  # Vite + proxy config
-  - eslint.config.js                # ESLint flat config
+  - src/theme/palette.ts # Theme palette
+  - src/lib/firebase/config.ts # Firebase config
+  - src/types/index.ts # Domain type exports
+  - src/types/brand.ts # Branded types (Zod 4 .brand())
+  - src/types/parsers.ts # Zod parsers for branded types
+  - functions/src/index.ts # Cloud Functions entry
+  - functions/src/copilotkit.ts # CopilotKit runtime server
+  - firebase.json # Firebase project config
+  - firestore.rules # Firestore security rules
+  - vite.config.ts # Vite + proxy config
+  - eslint.config.js # ESLint flat config

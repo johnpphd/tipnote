@@ -11,7 +11,9 @@ import { toolSchemas, ToolName } from "./tools/schemas";
  */
 function zodToParameters(schema: z.ZodType): Parameter[] {
   const jsonSchema = z.toJSONSchema(schema);
-  return jsonSchemaToActionParameters(jsonSchema as Parameters<typeof jsonSchemaToActionParameters>[0]);
+  return jsonSchemaToActionParameters(
+    jsonSchema as Parameters<typeof jsonSchemaToActionParameters>[0],
+  );
 }
 
 /**
@@ -33,7 +35,10 @@ function getToolDescriptions(): Record<string, string> {
  * after auth verification, so each action automatically operates within
  * the correct security context.
  */
-export function buildActions(workspaceId: string, userId: string): Action<Parameter[]>[] {
+export function buildActions(
+  workspaceId: string,
+  userId: string,
+): Action<Parameter[]>[] {
   const descriptions = getToolDescriptions();
 
   return (Object.entries(toolSchemas) as [ToolName, z.ZodType][]).map(
@@ -68,6 +73,6 @@ export function buildActions(workspaceId: string, userId: string): Action<Parame
       };
 
       return action;
-    }
+    },
   );
 }

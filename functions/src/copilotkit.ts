@@ -45,7 +45,7 @@ function buildTools(workspaceId: string, userId: string) {
           };
         }
       },
-    })
+    }),
   );
 }
 
@@ -60,7 +60,7 @@ function buildTools(workspaceId: string, userId: string) {
  */
 export async function handleCopilotKit(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   // The "info" method is unauthenticated — the client sends it to discover
   // runtime capabilities before any user interaction.

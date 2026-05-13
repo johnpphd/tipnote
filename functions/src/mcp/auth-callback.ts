@@ -9,7 +9,7 @@ import { createAuthCode } from "./oauth-store";
  */
 export async function handleAuthCallback(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });

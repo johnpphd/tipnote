@@ -53,7 +53,7 @@ export function registerMcpResources(server: McpServer): void {
           },
         ],
       };
-    }
+    },
   );
 
   // Resource: all pages (flat list)
@@ -94,7 +94,7 @@ export function registerMcpResources(server: McpServer): void {
           },
         ],
       };
-    }
+    },
   );
 
   // Resource: all databases with schemas
@@ -154,7 +154,7 @@ export function registerMcpResources(server: McpServer): void {
             propertyOrder: d.propertyOrder || [],
             rowCount: rowCount.data().count,
           };
-        })
+        }),
       );
 
       return {
@@ -169,6 +169,6 @@ export function registerMcpResources(server: McpServer): void {
           },
         ],
       };
-    }
+    },
   );
 }

@@ -17,7 +17,7 @@ export const copilotkit = onRequest(
     secrets: [anthropicApiKey, braveSearchApiKey],
     cors: true,
   },
-  handleCopilotKit
+  handleCopilotKit,
 );
 
 const mcpApp = createMcpApp();
@@ -29,5 +29,5 @@ export const mcp = onRequest(
     region: "us-central1",
     cors: false, // Express handles routing
   },
-  mcpApp
+  mcpApp,
 );
