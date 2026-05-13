@@ -222,7 +222,9 @@ function ValueInput({ propType, propDef, value, onChange }: ValueInputProps) {
             />
             <ListItemText
               primary={opt.name}
-              primaryTypographyProps={{ fontSize: "12px" }}
+              slotProps={{
+                primary: { sx: { fontSize: "12px" } },
+              }}
             />
           </MenuItem>
         ))}

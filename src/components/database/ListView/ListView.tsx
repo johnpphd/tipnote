@@ -115,9 +115,11 @@ export default function ListView({
                 </IconButton>
                 <ListItemText
                   primary={title}
-                  primaryTypographyProps={{
-                    variant: "body2",
-                    fontWeight: FONT_WEIGHT_MEDIUM,
+                  slotProps={{
+                    primary: {
+                      variant: "body2",
+                      sx: { fontWeight: FONT_WEIGHT_MEDIUM },
+                    },
                   }}
                 />
                 {/* Show a few property chips */}
@@ -173,7 +175,6 @@ export default function ListView({
                   </Typography>
                 )}
               </ListItemButton>
-
               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                 <Box sx={{ pl: 7, pr: 2, pb: 1.5 }}>
                   {visibleProps.map((prop) => (
@@ -222,7 +223,6 @@ export default function ListView({
           );
         })}
       </List>
-
       {/* Add row button */}
       {!isReadOnly && (
         <Box

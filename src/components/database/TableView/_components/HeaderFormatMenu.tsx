@@ -65,9 +65,11 @@ export default function HeaderFormatMenu({
               </ListItemIcon>
               <ListItemText
                 primary="Number"
-                primaryTypographyProps={{
-                  variant: "body2",
-                  fontSize: "13px",
+                slotProps={{
+                  primary: {
+                    variant: "body2",
+                    sx: { fontSize: "13px" },
+                  },
                 }}
               />
             </ListItemButton>
@@ -84,9 +86,11 @@ export default function HeaderFormatMenu({
               </ListItemIcon>
               <ListItemText
                 primary="Percent"
-                primaryTypographyProps={{
-                  variant: "body2",
-                  fontSize: "13px",
+                slotProps={{
+                  primary: {
+                    variant: "body2",
+                    sx: { fontSize: "13px" },
+                  },
                 }}
               />
             </ListItemButton>

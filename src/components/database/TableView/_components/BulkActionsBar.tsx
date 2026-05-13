@@ -1,6 +1,6 @@
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import {
-  DeleteOutline as DeleteIcon,
+  DeleteOutlined as DeleteIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
 import { FONT_WEIGHT_MEDIUM } from "@/theme/fontWeights";

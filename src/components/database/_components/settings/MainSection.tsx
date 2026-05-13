@@ -87,7 +87,6 @@ export default function MainSection({
           <CloseIcon sx={{ fontSize: 16, color: "text.secondary" }} />
         </IconButton>
       </Box>
-
       <Box
         sx={{
           display: "flex",
@@ -111,7 +110,9 @@ export default function MainSection({
             }}
             variant="standard"
             sx={{ flex: 1 }}
-            inputProps={{ sx: { fontSize: "13px", py: 0 } }}
+            slotProps={{
+              htmlInput: { sx: { fontSize: "13px", py: 0 } },
+            }}
           />
         ) : (
           <Typography
@@ -141,9 +142,7 @@ export default function MainSection({
           </Typography>
         )}
       </Box>
-
       <Divider sx={{ mx: 1 }} />
-
       <List dense disablePadding sx={{ py: 0.5 }}>
         <ListItemButton
           onClick={() => setSettingsSection("layout")}
@@ -154,7 +153,9 @@ export default function MainSection({
           </ListItemIcon>
           <ListItemText
             primary="Layout"
-            primaryTypographyProps={{ sx: { fontSize: "13px" } }}
+            slotProps={{
+              primary: { sx: { fontSize: "13px" } },
+            }}
           />
           <Typography
             sx={{ fontSize: "13px", color: "text.secondary", mr: 0.5 }}
@@ -173,7 +174,9 @@ export default function MainSection({
           </ListItemIcon>
           <ListItemText
             primary="Property visibility"
-            primaryTypographyProps={{ sx: { fontSize: "13px" } }}
+            slotProps={{
+              primary: { sx: { fontSize: "13px" } },
+            }}
           />
           <Typography
             sx={{ fontSize: "13px", color: "text.secondary", mr: 0.5 }}
@@ -196,7 +199,9 @@ export default function MainSection({
           </ListItemIcon>
           <ListItemText
             primary="Filter"
-            primaryTypographyProps={{ sx: { fontSize: "13px" } }}
+            slotProps={{
+              primary: { sx: { fontSize: "13px" } },
+            }}
           />
           <ChevronRightIcon sx={{ fontSize: 16, color: "text.secondary" }} />
         </ListItemButton>
@@ -214,7 +219,9 @@ export default function MainSection({
           </ListItemIcon>
           <ListItemText
             primary="Sort"
-            primaryTypographyProps={{ sx: { fontSize: "13px" } }}
+            slotProps={{
+              primary: { sx: { fontSize: "13px" } },
+            }}
           />
           <ChevronRightIcon sx={{ fontSize: 16, color: "text.secondary" }} />
         </ListItemButton>
@@ -228,7 +235,9 @@ export default function MainSection({
           </ListItemIcon>
           <ListItemText
             primary="Group"
-            primaryTypographyProps={{ sx: { fontSize: "13px" } }}
+            slotProps={{
+              primary: { sx: { fontSize: "13px" } },
+            }}
           />
           <ChevronRightIcon sx={{ fontSize: 16, color: "text.secondary" }} />
         </ListItemButton>
@@ -243,7 +252,9 @@ export default function MainSection({
             </ListItemIcon>
             <ListItemText
               primary="Color"
-              primaryTypographyProps={{ sx: { fontSize: "13px" } }}
+              slotProps={{
+                primary: { sx: { fontSize: "13px" } },
+              }}
             />
             <Typography
               sx={{ fontSize: "13px", color: "text.secondary", mr: 0.5 }}
@@ -257,7 +268,6 @@ export default function MainSection({
           </ListItemButton>
         )}
       </List>
-
       {views.length > 1 && (
         <>
           <Divider sx={{ mx: 1 }} />
@@ -271,8 +281,10 @@ export default function MainSection({
               </ListItemIcon>
               <ListItemText
                 primary="Delete view"
-                primaryTypographyProps={{
-                  sx: { fontSize: "13px", color: "error.main" },
+                slotProps={{
+                  primary: {
+                    sx: { fontSize: "13px", color: "error.main" },
+                  },
                 }}
               />
             </ListItemButton>

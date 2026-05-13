@@ -47,7 +47,9 @@ export default function LayoutSection({
             </ListItemIcon>
             <ListItemText
               primary={capitalize(type)}
-              primaryTypographyProps={{ sx: { fontSize: "13px" } }}
+              slotProps={{
+                primary: { sx: { fontSize: "13px" } },
+              }}
             />
           </ListItemButton>
         ))}

@@ -101,7 +101,6 @@ function SearchDialogInner({ onClose }: SearchDialogInnerProps) {
           ESC
         </Typography>
       </Box>
-
       <List sx={{ maxHeight: 400, overflowY: "auto", py: 0.5 }}>
         {results.length === 0 && (
           <Box sx={{ p: 3, textAlign: "center" }}>
@@ -119,7 +118,7 @@ function SearchDialogInner({ onClose }: SearchDialogInnerProps) {
           >
             <ListItemIcon sx={{ minWidth: 32 }}>
               {page.icon ? (
-                <Typography fontSize="16px">{page.icon}</Typography>
+                <Typography sx={{ fontSize: "16px" }}>{page.icon}</Typography>
               ) : page.type === "database" ? (
                 <DatabaseIcon
                   fontSize="small"
@@ -131,9 +130,11 @@ function SearchDialogInner({ onClose }: SearchDialogInnerProps) {
             </ListItemIcon>
             <ListItemText
               primary={page.title || "Untitled"}
-              primaryTypographyProps={{
-                variant: "body2",
-                noWrap: true,
+              slotProps={{
+                primary: {
+                  variant: "body2",
+                  noWrap: true,
+                },
               }}
             />
           </ListItemButton>
@@ -155,16 +156,18 @@ export default function SearchDialog({ open, onClose }: SearchDialogProps) {
       onClose={onClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: {
-          position: "fixed",
-          top: "20%",
-          m: 0,
-          borderRadius: 2,
-          overflow: "hidden",
-          bgcolor: "background.paper",
-          border: 1,
-          borderColor: "divider",
+      slotProps={{
+        paper: {
+          sx: {
+            position: "fixed",
+            top: "20%",
+            m: 0,
+            borderRadius: 2,
+            overflow: "hidden",
+            bgcolor: "background.paper",
+            border: 1,
+            borderColor: "divider",
+          },
         },
       }}
     >

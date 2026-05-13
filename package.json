@@ -16,7 +16,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.80.0",
+    "@anthropic-ai/sdk": "^0.95.2",
     "@copilotkit/react-core": "^1.54.0",
     "@copilotkit/react-ui": "^1.54.0",
     "@copilotkit/runtime-client-gql": "^1.54.0",
@@ -25,8 +25,8 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.8",
-    "@mui/material": "^7.3.8",
+    "@mui/icons-material": "^9.0.1",
+    "@mui/material": "^9.0.1",
     "@tanstack/react-query": "^5.91.0",
     "@tanstack/react-router": "^1.167.5",
     "@tanstack/react-table": "^8.21.3",
@@ -55,7 +55,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "use-debounce": "^10.1.0",
-    "uuid": "^13.0.0",
+    "uuid": "^14.0.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -70,7 +70,7 @@
     "eslint-plugin-react-refresh": "^0.5.0",
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
-    "typescript": "^5.7.0",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.33.1",
     "vite": "^8.0.0"
   }

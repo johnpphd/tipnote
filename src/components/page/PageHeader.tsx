@@ -191,7 +191,7 @@ export default function PageHeader({ page, isReadOnly }: PageHeaderProps) {
       >
         {page.icon &&
           (isReadOnly ? (
-            <Typography fontSize="32px" sx={{ mr: 1 }}>
+            <Typography sx={{ fontSize: "32px", mr: 1 }}>
               {page.icon}
             </Typography>
           ) : (
@@ -200,7 +200,7 @@ export default function PageHeader({ page, isReadOnly }: PageHeaderProps) {
               aria-label="Change icon"
               onClick={(e) => setEmojiAnchor(e.currentTarget)}
             >
-              <Typography fontSize="32px">{page.icon}</Typography>
+              <Typography sx={{ fontSize: "32px" }}>{page.icon}</Typography>
             </IconButton>
           ))}
 

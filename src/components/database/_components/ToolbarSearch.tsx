@@ -41,19 +41,21 @@ export default function ToolbarSearch({
             "& .MuiOutlinedInput-root": { height: 28, fontSize: "13px" },
             "& .MuiOutlinedInput-input": { py: 0.25, px: 1 },
           }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  size="small"
-                  aria-label="Close search"
-                  onClick={onCloseSearch}
-                  sx={{ p: 0.25 }}
-                >
-                  <CloseIcon sx={{ fontSize: 14 }} />
-                </IconButton>
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    aria-label="Close search"
+                    onClick={onCloseSearch}
+                    sx={{ p: 0.25 }}
+                  >
+                    <CloseIcon sx={{ fontSize: 14 }} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
           }}
         />
       )}

@@ -18,7 +18,7 @@ import {
   ChevronLeft as ChevronLeftIcon,
   Search as SearchIcon,
   Home as HomeIcon,
-  PeopleOutline as PeopleIcon,
+  PeopleOutlined as PeopleIcon,
   LightMode as LightModeIcon,
   DarkMode as DarkModeIcon,
 } from "@mui/icons-material";
@@ -146,7 +146,6 @@ export default function Sidebar({ workspaceId, onSearchClick }: SidebarProps) {
           <ChevronLeftIcon sx={{ fontSize: 18, color: "text.secondary" }} />
         </IconButton>
       </Box>
-
       {/* Navigation items */}
       <List dense sx={{ px: 0.75, py: 0.5 }}>
         <ListItemButton
@@ -163,8 +162,10 @@ export default function Sidebar({ workspaceId, onSearchClick }: SidebarProps) {
           </ListItemIcon>
           <ListItemText
             primary="Search"
-            primaryTypographyProps={{
-              sx: { fontSize: "13px", color: "text.secondary" },
+            slotProps={{
+              primary: {
+                sx: { fontSize: "13px", color: "text.secondary" },
+              },
             }}
           />
         </ListItemButton>
@@ -182,8 +183,10 @@ export default function Sidebar({ workspaceId, onSearchClick }: SidebarProps) {
           </ListItemIcon>
           <ListItemText
             primary="Home"
-            primaryTypographyProps={{
-              sx: { fontSize: "13px", color: "text.secondary" },
+            slotProps={{
+              primary: {
+                sx: { fontSize: "13px", color: "text.secondary" },
+              },
             }}
           />
         </ListItemButton>
@@ -201,13 +204,14 @@ export default function Sidebar({ workspaceId, onSearchClick }: SidebarProps) {
           </ListItemIcon>
           <ListItemText
             primary="Shared with me"
-            primaryTypographyProps={{
-              sx: { fontSize: "13px", color: "text.secondary" },
+            slotProps={{
+              primary: {
+                sx: { fontSize: "13px", color: "text.secondary" },
+              },
             }}
           />
         </ListItemButton>
       </List>
-
       {/* Resizable sections container */}
       <Box
         ref={containerRef}
@@ -386,13 +390,15 @@ export default function Sidebar({ workspaceId, onSearchClick }: SidebarProps) {
                       </ListItemIcon>
                       <ListItemText
                         primary={page.title || "Untitled"}
-                        primaryTypographyProps={{
-                          sx: {
-                            fontSize: "13px",
-                            color: "text.primary",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
+                        slotProps={{
+                          primary: {
+                            sx: {
+                              fontSize: "13px",
+                              color: "text.primary",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            },
                           },
                         }}
                       />
@@ -404,7 +410,6 @@ export default function Sidebar({ workspaceId, onSearchClick }: SidebarProps) {
           </>
         )}
       </Box>
-
       {/* Theme toggle */}
       <ListItemButton
         onClick={() => setThemeMode(themeMode === "dark" ? "light" : "dark")}
@@ -427,12 +432,13 @@ export default function Sidebar({ workspaceId, onSearchClick }: SidebarProps) {
         </ListItemIcon>
         <ListItemText
           primary={themeMode === "dark" ? "Light mode" : "Dark mode"}
-          primaryTypographyProps={{
-            sx: { fontSize: "13px", color: "text.secondary" },
+          slotProps={{
+            primary: {
+              sx: { fontSize: "13px", color: "text.secondary" },
+            },
           }}
         />
       </ListItemButton>
-
       {/* Trash button */}
       <ListItemButton
         onClick={() => setShowTrash(true)}
@@ -450,12 +456,13 @@ export default function Sidebar({ workspaceId, onSearchClick }: SidebarProps) {
         </ListItemIcon>
         <ListItemText
           primary="Trash"
-          primaryTypographyProps={{
-            sx: { fontSize: "13px", color: "text.secondary" },
+          slotProps={{
+            primary: {
+              sx: { fontSize: "13px", color: "text.secondary" },
+            },
           }}
         />
       </ListItemButton>
-
       <TrashPanel
         open={showTrash}
         onClose={() => setShowTrash(false)}
