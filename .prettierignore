@@ -1,1 +1,7 @@
 src/routeTree.gen.ts
+dist
+node_modules
+functions/lib
+functions/node_modules
+pnpm-lock.yaml
+functions/pnpm-lock.yaml

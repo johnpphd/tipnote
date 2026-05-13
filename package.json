@@ -10,8 +10,8 @@
     "build:functions": "pnpm --dir functions build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/",
-    "prettier": "prettier --check \"src/**/*.{ts,tsx}\" \"*.json\"",
-    "prettier:fix": "prettier --write \"src/**/*.{ts,tsx}\" \"*.json\"",
+    "prettier": "prettier --check \"**/*.{ts,tsx,js,mjs,cjs,json,yml,yaml,md}\"",
+    "prettier:fix": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,json,yml,yaml,md}\"",
     "verify": "pnpm typecheck && pnpm lint && pnpm prettier && pnpm build",
     "preview": "vite preview"
   },
