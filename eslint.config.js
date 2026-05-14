@@ -36,6 +36,12 @@ export default [
   brandedTypes.configs.recommended,
   themeGuardrails.configs.recommended,
   {
+    files: ["src/components/page/_emojiData/**/*.ts"],
+    rules: {
+      "theme-guardrails/no-hardcoded-styles": "off",
+    },
+  },
+  {
     files: ["src/routes/**/*.tsx"],
     rules: {
       "react-refresh/only-export-components": "off",

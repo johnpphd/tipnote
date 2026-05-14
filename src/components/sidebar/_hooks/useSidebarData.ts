@@ -4,7 +4,7 @@ import { useSharedPages } from "@/hooks/useSharedPages";
 import { UserBrandId, type WorkspaceBrandId } from "@/types";
 
 export function useSidebarData(
-  workspaceId: WorkspaceBrandId,
+  workspaceId: WorkspaceBrandId | undefined,
   userUid: string | undefined,
 ) {
   const { data: pages } = usePages(workspaceId);
