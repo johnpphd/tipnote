@@ -16,8 +16,10 @@ import { BASE_URL } from "./config";
 export function createMcpApp(): express.Application {
   const app = express();
 
-  // Parse JSON bodies (needed for /oauth/callback and /mcp)
-  app.use(express.json());
+  // Firebase Functions Gen 2 (onRequest) already parses JSON request bodies
+  // before invoking the Express handler. Calling express.json() here would
+  // try to read the request stream a second time and throw
+  // "InternalServerError: stream is not readable".
 
   const provider = new NotionCloneOAuthProvider();
 
